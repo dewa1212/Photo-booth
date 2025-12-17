@@ -7,12 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const captureCanvas = document.getElementById("capture-canvas");
   const stripCanvas = document.getElementById("strip-canvas");
   const photoStripElement = document.getElementById("photo-strip");
+
   const captureBtn = document.getElementById("capture-btn");
   const printBtn = document.getElementById("print-btn");
   const saveBtn = document.getElementById("save-btn");
   const retakeBtn = document.getElementById("retake-btn");
+
   const currentFilterLabel = document.getElementById("current-filter");
-  const boothArea = document.getElementById("booth-area");
   const stripResultArea = document.getElementById("strip-result-area");
   const feedbackOverlay = document.getElementById("feedback-overlay");
   const feedbackText = document.getElementById("feedback-text");
@@ -21,14 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPhotoCountSpan = document.getElementById("current-photo-count");
   const totalPhotoCountSpan = document.getElementById("total-photo-count");
   const loadingStrip = document.getElementById("loading-strip");
-  const boothContainer = document.querySelector(".booth-container");
   const filterOptions = document.querySelectorAll(".filter-option");
+  const coverBg = document.getElementById("coverBg");
+  const startBtn = document.getElementById("startBtn");
 
   let stream = null;
   let capturedPhotosData = [];
   let currentStripDataUrl = null;
   let isCapturing = false;
   let currentFilter = "normal";
+
+  // Start Button Click
+  startBtn.addEventListener("click", () => {
+    coverBg.classList.add("hidden");
+    setTimeout(() => {
+      triggerLoadAnimation();
+    }, 100);
+  });
 
   async function initializeWebcam() {
     try {
@@ -42,21 +52,23 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       video.srcObject = stream;
       await video.play();
-      console.log("Webcam siap.");
       captureBtn.disabled = false;
+      console.log("Webcam siap.");
     } catch (err) {
       console.error("Error webcam: ", err);
       alert(
         "Tidak bisa akses webcam.\nPastikan Anda memberikan izin dan tidak ada aplikasi lain yang menggunakannya."
       );
       captureBtn.disabled = true;
-      captureBtn.innerHTML = '<i class="fas fa-video-slash"></i> Webcam Error';
+      captureBtn.innerHTML =
+        '<i class="fas fa-video-slash"></i> Webcam Error';
     }
   }
 
   function triggerLoadAnimation() {
     setTimeout(() => {
       document.body.classList.add("loaded");
+      initializeWebcam();
     }, 100);
   }
 
@@ -68,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     switch (filterName) {
       case "vintage":
-        video.style.filter = "sepia(0.5) contrast(1.1) brightness(0.95)";
+        video.style.filter =
+          "sepia(0.5) contrast(1.1) brightness(0.95)";
         break;
       case "grayscale":
         video.style.filter = "grayscale(1)";
@@ -77,23 +90,30 @@ document.addEventListener("DOMContentLoaded", () => {
         video.style.filter = "sepia(0.8)";
         break;
       case "funky":
-        video.style.filter = "saturate(1.6) hue-rotate(45deg) contrast(1.1)";
+        video.style.filter =
+          "saturate(1.6) hue-rotate(45deg) contrast(1.1)";
         break;
+      default:
+        video.style.filter = "none";
     }
   }
 
   function startCaptureSequence() {
     if (isCapturing) return;
     isCapturing = true;
+
     capturedPhotosData = [];
     currentStripDataUrl = null;
+
     captureBtn.disabled = true;
     printBtn.disabled = true;
     saveBtn.disabled = true;
     retakeBtn.disabled = true;
+
     progressInfo.style.display = "inline-block";
     totalPhotoCountSpan.textContent = PHOTOS_PER_STRIP;
     currentPhotoCountSpan.textContent = "0";
+
     stripResultArea.classList.remove("active");
     photoStripElement.src = "";
     photoStripElement.style.display = "none";
@@ -108,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function capturePhotoWithCountdown(photoNumber) {
     currentPhotoCountSpan.textContent = photoNumber;
     let count = COUNTDOWN_TIME;
+
     feedbackText.textContent = count;
     feedbackOverlay.classList.add("show");
 
@@ -144,176 +165,121 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => flashOverlay.classList.remove("flash"), 120);
 
     const context = captureCanvas.getContext("2d");
-    captureCanvas.width = video.videoWidth;
-    captureCanvas.height = video.videoHeight;
+    captureCanvas.width = video.videoWidth || 800;
+    captureCanvas.height = video.videoHeight || 600;
 
+    // mirror video ke canvas
+    context.save();
     context.translate(captureCanvas.width, 0);
     context.scale(-1, 1);
-    context.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+    context.drawImage(
+      video,
+      0,
+      0,
+      captureCanvas.width,
+      captureCanvas.height
+    );
+    context.restore();
 
-    context.setTransform(1, 0, 0, 1, 0, 0);
-
-    if (currentFilter !== "normal") {
-      context.save();
-      switch (currentFilter) {
-        case "vintage":
-          context.filter = "sepia(0.5) contrast(1.1) brightness(0.95)";
-          break;
-        case "grayscale":
-          context.filter = "grayscale(1)";
-          break;
-        case "sepia":
-          context.filter = "sepia(0.8)";
-          break;
-        case "funky":
-          context.filter = "saturate(1.6) hue-rotate(45deg) contrast(1.1)";
-          break;
-      }
-      context.drawImage(captureCanvas, 0, 0);
-      context.restore();
-    }
-
-    const dataUrl = captureCanvas.toDataURL("image/png");
-    capturedPhotosData.push(dataUrl);
-    console.log(`Foto ${photoNumber} captured.`);
+    // simpan ke data URL
+    const img = new Image();
+    img.src = captureCanvas.toDataURL("image/png");
+    capturedPhotosData.push(img);
   }
 
-  async function generatePhotoStrip() {
-    if (capturedPhotosData.length !== PHOTOS_PER_STRIP) {
-      console.error("Jumlah foto tidak sesuai.");
-      resetCaptureProcess("Error: Jumlah foto salah.");
+  function generatePhotoStrip() {
+    if (capturedPhotosData.length === 0) {
+      alert("Tidak ada foto yang tertangkap.");
+      isCapturing = false;
+      captureBtn.disabled = false;
+      retakeBtn.disabled = false;
+      loadingStrip.style.display = "none";
       return;
     }
 
-    stripResultArea.classList.add("active");
-    loadingStrip.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Membuat strip...`;
+    const sampleImg = capturedPhotosData[0];
+    const singleWidth = sampleImg.width || captureCanvas.width;
+    const singleHeight = sampleImg.height || captureCanvas.height;
 
-    const stripCtx = stripCanvas.getContext("2d");
-    const images = [];
-    let photoWidth = 0,
-      photoHeight = 0;
+    const gap = 20;
+    const margin = 30;
 
-    try {
-      const imagePromises = capturedPhotosData.map((dataUrl) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            if (images.length === 0) {
-              photoWidth = img.naturalWidth;
-              photoHeight = img.naturalHeight;
-            }
-            images.push(img);
-            resolve(img);
-          };
-          img.onerror = reject;
-          img.src = dataUrl;
-        });
-      });
-      await Promise.all(imagePromises);
-    } catch (error) {
-      console.error("Gagal load gambar:", error);
-      resetCaptureProcess("Error: Gagal memuat gambar.");
-      return;
-    }
+    stripCanvas.width = singleWidth + 2 * 20;
+    stripCanvas.height =
+      PHOTOS_PER_STRIP * singleHeight +
+      (PHOTOS_PER_STRIP - 1) * gap +
+      2 * margin;
 
-    if (images.length !== PHOTOS_PER_STRIP || photoWidth === 0) {
-      console.error("Load gambar gagal / dimensi 0.");
-      resetCaptureProcess("Error: Gagal memproses gambar.");
-      return;
-    }
+    const ctx = stripCanvas.getContext("2d");
 
-    const padding = Math.round(photoWidth * 0.02);
-    const stripWidth = photoWidth + padding * 2;
-    const stripHeight = (photoHeight + padding) * PHOTOS_PER_STRIP + padding;
+    // background strip
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
 
-    stripCanvas.width = stripWidth;
-    stripCanvas.height = stripHeight;
+    // border
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(2, 2, stripCanvas.width - 4, stripCanvas.height - 4);
 
-    stripCtx.fillStyle = "#FFFFFF";
-    stripCtx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
+    // gambar foto-foto
+    capturedPhotosData.forEach((img, i) => {
+      const x = (stripCanvas.width - singleWidth) / 2;
+      const y = margin + i * (singleHeight + gap);
+      ctx.drawImage(img, x, y, singleWidth, singleHeight);
+    });
 
-    let currentY = padding;
-    for (let i = 0; i < images.length; i++) {
-      const img = images[i];
-      stripCtx.drawImage(img, padding, currentY, photoWidth, photoHeight);
-      currentY += photoHeight + padding;
-    }
-
-    stripCtx.strokeStyle = "#EEE";
-    stripCtx.lineWidth = 1;
-    stripCtx.strokeRect(0, 0, stripCanvas.width, stripCanvas.height);
-
+    // hasil
     currentStripDataUrl = stripCanvas.toDataURL("image/png");
     photoStripElement.src = currentStripDataUrl;
-    console.log("Strip dibuat.");
-
-    loadingStrip.style.display = "none";
     photoStripElement.style.display = "block";
+    stripResultArea.classList.add("active");
+    loadingStrip.style.display = "none";
+
     printBtn.disabled = false;
     saveBtn.disabled = false;
     retakeBtn.disabled = false;
-    isCapturing = false;
-  }
-
-  function resetCaptureProcess(errorMessage = null) {
-    if (errorMessage) {
-      alert(errorMessage);
-    }
-    isCapturing = false;
-    capturedPhotosData = [];
-    currentStripDataUrl = null;
     captureBtn.disabled = false;
-    captureBtn.innerHTML = '<i class="fas fa-camera"></i> Mulai Foto Strip';
-    printBtn.disabled = true;
-    saveBtn.disabled = true;
-    retakeBtn.disabled = false;
-    progressInfo.style.display = "none";
-    stripResultArea.classList.remove("active");
-    setTimeout(() => {
-      if (loadingStrip && photoStripElement) {
-        loadingStrip.style.display = "flex";
-        photoStripElement.style.display = "none";
-        photoStripElement.src = "";
-      }
-    }, 300);
+    isCapturing = false;
   }
 
-  function printPhotoStrip() {
-    if (!currentStripDataUrl || isCapturing) return;
+  function saveStrip() {
+    if (!currentStripDataUrl) return;
+    const a = document.createElement("a");
+    a.href = currentStripDataUrl;
+    const ts = new Date().toISOString().replace(/[:.]/g, "-");
+    a.download = `dewa-photo-strip-${ts}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function printStrip() {
+    if (!currentStripDataUrl) return;
     window.print();
   }
 
-  function savePhotoStrip() {
-    if (!currentStripDataUrl || isCapturing) return;
-    const link = document.createElement("a");
-    link.href = currentStripDataUrl;
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    link.download = `dewaphoto_strip_${timestamp}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  function retakePhoto() {
-    if (isCapturing) return;
-    resetCaptureProcess();
-  }
-
+  // Event listeners
   captureBtn.addEventListener("click", startCaptureSequence);
-  printBtn.addEventListener("click", printPhotoStrip);
-  saveBtn.addEventListener("click", savePhotoStrip);
-  retakeBtn.addEventListener("click", retakePhoto);
+  saveBtn.addEventListener("click", saveStrip);
+  printBtn.addEventListener("click", printStrip);
 
-  filterOptions.forEach((option) => {
-    option.addEventListener("click", function () {
-      if (isCapturing) return;
-      filterOptions.forEach((opt) => opt.classList.remove("active"));
-      this.classList.add("active");
-      applyFilter(this.dataset.filter);
+  retakeBtn.addEventListener("click", () => {
+    capturedPhotosData = [];
+    currentStripDataUrl = null;
+    stripResultArea.classList.remove("active");
+    photoStripElement.src = "";
+    photoStripElement.style.display = "none";
+    loadingStrip.style.display = "flex";
+  });
+
+  filterOptions.forEach((opt) => {
+    opt.addEventListener("click", () => {
+      filterOptions.forEach((o) => o.classList.remove("active"));
+      opt.classList.add("active");
+      applyFilter(opt.dataset.filter);
     });
   });
 
-  captureBtn.disabled = true;
-  initializeWebcam();
-  triggerLoadAnimation();
+  // Kalau mau langsung tanpa cover, bisa panggil triggerLoadAnimation() di sini
+  // triggerLoadAnimation();
 });
