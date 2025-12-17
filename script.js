@@ -1,251 +1,181 @@
 document.addEventListener("DOMContentLoaded", () => {
   const PHOTOS_PER_STRIP = 4;
   const COUNTDOWN_TIME = 3;
-  const DELAY_BETWEEN_PHOTOS = 1200;
+  const GAP = 10;
+  const MARGIN = 16;
 
   const video = document.getElementById("video");
   const captureCanvas = document.getElementById("capture-canvas");
   const stripCanvas = document.getElementById("strip-canvas");
-  const photoStripElement = document.getElementById("photo-strip");
+  const photoStrip = document.getElementById("photo-strip");
 
   const captureBtn = document.getElementById("capture-btn");
-  const printBtn = document.getElementById("print-btn");
   const saveBtn = document.getElementById("save-btn");
+  const printBtn = document.getElementById("print-btn");
   const retakeBtn = document.getElementById("retake-btn");
 
-  const currentFilterLabel = document.getElementById("current-filter");
-  const stripResultArea = document.getElementById("strip-result-area");
-  const feedbackOverlay = document.getElementById("feedback-overlay");
-  const feedbackText = document.getElementById("feedback-text");
-  const flashOverlay = document.getElementById("flash-overlay");
-  const progressInfo = document.getElementById("progress-info");
-  const currentPhotoCountSpan = document.getElementById("current-photo-count");
-  const totalPhotoCountSpan = document.getElementById("total-photo-count");
-  const loadingStrip = document.getElementById("loading-strip");
-  const filterOptions = document.querySelectorAll(".filter-option");
-  const coverBg = document.getElementById("coverBg");
-  const startBtn = document.getElementById("startBtn");
+  const countdownOverlay = document.getElementById("countdown-overlay");
+  const countdownText = document.getElementById("countdown-text");
+  const progress = document.getElementById("progress");
+  const currentCount = document.getElementById("current-count");
+  const loading = document.getElementById("loading");
 
   let stream = null;
-  let capturedPhotosData = [];
-  let currentStripDataUrl = null;
   let isCapturing = false;
-  let currentFilter = "normal";
+  let photos = [];
+  let stripDataUrl = null;
 
-  // Start Button Click
-  startBtn.addEventListener("click", () => {
-    coverBg.classList.add("hidden");
-    setTimeout(() => {
-      triggerLoadAnimation();
-    }, 100);
-  });
-
-  async function initializeWebcam() {
+  async function initCamera() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 800 },
-          height: { ideal: 600 },
-          facingMode: "user",
-        },
+        video: { facingMode: "user" },
         audio: false,
       });
       video.srcObject = stream;
       await video.play();
       captureBtn.disabled = false;
-      console.log("Webcam siap.");
     } catch (err) {
-      console.error("Error webcam: ", err);
+      console.error(err);
       alert(
-        "Tidak bisa akses webcam.\nPastikan Anda memberikan izin dan tidak ada aplikasi lain yang menggunakannya."
+        "Tidak bisa akses webcam.\nPastikan izin kamera aktif dan tidak dipakai aplikasi lain."
       );
       captureBtn.disabled = true;
-      captureBtn.innerHTML =
-        '<i class="fas fa-video-slash"></i> Webcam Error';
     }
   }
 
-  function triggerLoadAnimation() {
-    setTimeout(() => {
-      document.body.classList.add("loaded");
-      initializeWebcam();
-    }, 100);
-  }
-
-  function applyFilter(filterName) {
-    currentFilter = filterName;
-    currentFilterLabel.textContent =
-      filterName.charAt(0).toUpperCase() + filterName.slice(1);
-    video.style.filter = "";
-
-    switch (filterName) {
-      case "vintage":
-        video.style.filter =
-          "sepia(0.5) contrast(1.1) brightness(0.95)";
-        break;
-      case "grayscale":
-        video.style.filter = "grayscale(1)";
-        break;
-      case "sepia":
-        video.style.filter = "sepia(0.8)";
-        break;
-      case "funky":
-        video.style.filter =
-          "saturate(1.6) hue-rotate(45deg) contrast(1.1)";
-        break;
-      default:
-        video.style.filter = "none";
-    }
-  }
-
-  function startCaptureSequence() {
+  function startStripCapture() {
     if (isCapturing) return;
     isCapturing = true;
-
-    capturedPhotosData = [];
-    currentStripDataUrl = null;
+    photos = [];
+    stripDataUrl = null;
 
     captureBtn.disabled = true;
-    printBtn.disabled = true;
     saveBtn.disabled = true;
-    retakeBtn.disabled = true;
+    printBtn.disabled = true;
 
-    progressInfo.style.display = "inline-block";
-    totalPhotoCountSpan.textContent = PHOTOS_PER_STRIP;
-    currentPhotoCountSpan.textContent = "0";
+    progress.hidden = false;
+    currentCount.textContent = "0";
 
-    stripResultArea.classList.remove("active");
-    photoStripElement.src = "";
-    photoStripElement.style.display = "none";
-    loadingStrip.style.display = "flex";
+    loading.hidden = false;
+    photoStrip.hidden = true;
 
-    captureBtn.innerHTML =
-      '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-
-    capturePhotoWithCountdown(1);
+    captureNext(1);
   }
 
-  function capturePhotoWithCountdown(photoNumber) {
-    currentPhotoCountSpan.textContent = photoNumber;
-    let count = COUNTDOWN_TIME;
+  function captureNext(n) {
+    currentCount.textContent = n.toString();
+    let countdown = COUNTDOWN_TIME;
 
-    feedbackText.textContent = count;
-    feedbackOverlay.classList.add("show");
+    countdownText.textContent = countdown;
+    countdownOverlay.classList.add("show");
 
-    const countdownInterval = setInterval(() => {
-      count--;
-      if (count > 0) {
-        feedbackText.textContent = count;
-      } else if (count === 0) {
-        feedbackText.textContent = "SENYUM!";
+    const timer = setInterval(() => {
+      countdown -= 1;
+      if (countdown > 0) {
+        countdownText.textContent = countdown;
+      } else if (countdown === 0) {
+        countdownText.textContent = "Senyum!";
       } else {
-        clearInterval(countdownInterval);
-        feedbackOverlay.classList.remove("show");
-        captureSingleFrame(photoNumber);
+        clearInterval(timer);
+        countdownOverlay.classList.remove("show");
+        grabFrame();
 
-        if (photoNumber < PHOTOS_PER_STRIP) {
-          setTimeout(() => {
-            capturePhotoWithCountdown(photoNumber + 1);
-          }, DELAY_BETWEEN_PHOTOS);
+        if (n < PHOTOS_PER_STRIP) {
+          setTimeout(() => captureNext(n + 1), 800);
         } else {
-          setTimeout(() => {
-            console.log("Selesai, membuat strip...");
-            progressInfo.style.display = "none";
-            captureBtn.innerHTML =
-              '<i class="fas fa-camera"></i> Mulai Foto Strip';
-            generatePhotoStrip();
-          }, 500);
+          finishStrip();
         }
       }
     }, 1000);
   }
 
-  function captureSingleFrame(photoNumber) {
-    flashOverlay.classList.add("flash");
-    setTimeout(() => flashOverlay.classList.remove("flash"), 120);
+  function grabFrame() {
+    const w = video.videoWidth || 640;
+    const h = video.videoHeight || 480;
 
-    const context = captureCanvas.getContext("2d");
-    captureCanvas.width = video.videoWidth || 800;
-    captureCanvas.height = video.videoHeight || 600;
+    captureCanvas.width = w;
+    captureCanvas.height = h;
 
-    // mirror video ke canvas
-    context.save();
-    context.translate(captureCanvas.width, 0);
-    context.scale(-1, 1);
-    context.drawImage(
-      video,
-      0,
-      0,
-      captureCanvas.width,
-      captureCanvas.height
-    );
-    context.restore();
+    const ctx = captureCanvas.getContext("2d");
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, w, h);
+    ctx.restore();
 
-    // simpan ke data URL
     const img = new Image();
     img.src = captureCanvas.toDataURL("image/png");
-    capturedPhotosData.push(img);
+    photos.push(img);
   }
 
-  function generatePhotoStrip() {
-    if (capturedPhotosData.length === 0) {
-      alert("Tidak ada foto yang tertangkap.");
+  function finishStrip() {
+    // tunggu image load (simple delay cukup untuk kasus ini)
+    setTimeout(() => {
+      buildStrip();
+    }, 400);
+  }
+
+  function buildStrip() {
+    if (!photos.length) {
       isCapturing = false;
       captureBtn.disabled = false;
-      retakeBtn.disabled = false;
-      loadingStrip.style.display = "none";
       return;
     }
 
-    const sampleImg = capturedPhotosData[0];
-    const singleWidth = sampleImg.width || captureCanvas.width;
-    const singleHeight = sampleImg.height || captureCanvas.height;
+    const w = photos[0].width || captureCanvas.width;
+    const h = photos[0].height || captureCanvas.height;
 
-    const gap = 20;
-    const margin = 30;
-
-    stripCanvas.width = singleWidth + 2 * 20;
+    stripCanvas.width = w + MARGIN * 2;
     stripCanvas.height =
-      PHOTOS_PER_STRIP * singleHeight +
-      (PHOTOS_PER_STRIP - 1) * gap +
-      2 * margin;
+      PHOTOS_PER_STRIP * h + (PHOTOS_PER_STRIP - 1) * GAP + MARGIN * 2;
 
     const ctx = stripCanvas.getContext("2d");
 
-    // background strip
-    ctx.fillStyle = "#ffffff";
+    // kartu putih minimalis untuk strip
+    ctx.fillStyle = "#f9fafb";
     ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
 
-    // border
-    ctx.strokeStyle = "#e0e0e0";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(2, 2, stripCanvas.width - 4, stripCanvas.height - 4);
+    ctx.fillStyle = "#e5e7eb";
+    ctx.fillRect(
+      4,
+      4,
+      stripCanvas.width - 8,
+      stripCanvas.height - 8
+    );
 
-    // gambar foto-foto
-    capturedPhotosData.forEach((img, i) => {
-      const x = (stripCanvas.width - singleWidth) / 2;
-      const y = margin + i * (singleHeight + gap);
-      ctx.drawImage(img, x, y, singleWidth, singleHeight);
+    // isi
+    photos.forEach((img, i) => {
+      const x = (stripCanvas.width - w) / 2;
+      const y = MARGIN + i * (h + GAP);
+      ctx.drawImage(img, x, y, w, h);
     });
 
-    // hasil
-    currentStripDataUrl = stripCanvas.toDataURL("image/png");
-    photoStripElement.src = currentStripDataUrl;
-    photoStripElement.style.display = "block";
-    stripResultArea.classList.add("active");
-    loadingStrip.style.display = "none";
+    // logo kecil “Dewa Photo” di bawah
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "14px system-ui";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Dewa Photo",
+      stripCanvas.width / 2,
+      stripCanvas.height - 8
+    );
 
-    printBtn.disabled = false;
+    stripDataUrl = stripCanvas.toDataURL("image/png");
+    photoStrip.src = stripDataUrl;
+    photoStrip.hidden = false;
+    loading.hidden = true;
+
     saveBtn.disabled = false;
-    retakeBtn.disabled = false;
+    printBtn.disabled = false;
     captureBtn.disabled = false;
     isCapturing = false;
+    progress.hidden = true;
   }
 
   function saveStrip() {
-    if (!currentStripDataUrl) return;
+    if (!stripDataUrl) return;
     const a = document.createElement("a");
-    a.href = currentStripDataUrl;
+    a.href = stripDataUrl;
     const ts = new Date().toISOString().replace(/[:.]/g, "-");
     a.download = `dewa-photo-strip-${ts}.png`;
     document.body.appendChild(a);
@@ -254,32 +184,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function printStrip() {
-    if (!currentStripDataUrl) return;
+    if (!stripDataUrl) return;
     window.print();
   }
 
-  // Event listeners
-  captureBtn.addEventListener("click", startCaptureSequence);
+  function resetResult() {
+    photos = [];
+    stripDataUrl = null;
+    photoStrip.hidden = true;
+    loading.hidden = false;
+    saveBtn.disabled = true;
+    printBtn.disabled = true;
+  }
+
+  captureBtn.addEventListener("click", startStripCapture);
   saveBtn.addEventListener("click", saveStrip);
   printBtn.addEventListener("click", printStrip);
+  retakeBtn.addEventListener("click", resetResult);
 
-  retakeBtn.addEventListener("click", () => {
-    capturedPhotosData = [];
-    currentStripDataUrl = null;
-    stripResultArea.classList.remove("active");
-    photoStripElement.src = "";
-    photoStripElement.style.display = "none";
-    loadingStrip.style.display = "flex";
-  });
-
-  filterOptions.forEach((opt) => {
-    opt.addEventListener("click", () => {
-      filterOptions.forEach((o) => o.classList.remove("active"));
-      opt.classList.add("active");
-      applyFilter(opt.dataset.filter);
-    });
-  });
-
-  // Kalau mau langsung tanpa cover, bisa panggil triggerLoadAnimation() di sini
-  // triggerLoadAnimation();
+  initCamera();
 });
