@@ -1,97 +1,40 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dewa Photo Booth</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <main class="page">
-      <section class="panel panel-left">
-        <header class="panel-header">
-          <h1 class="app-title">
-            <i class="fas fa-camera-retro"></i>
-            Dewa Photo Booth
-          </h1>
-          <p class="app-subtitle">Ambil 4 foto, jadikan satu strip.</p>
-        </header>
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Photo Booth</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-        <div class="video-shell">
-          <video id="video" autoplay playsinline>Webcam tidak tersedia.</video>
-          <canvas id="capture-canvas" hidden></canvas>
+<h2>📸 Simple Photo Booth</h2>
 
-          <div id="countdown" class="countdown">
-            <span id="countdown-number"></span>
-          </div>
-        </div>
+<div class="booth">
+  <video id="video" autoplay></video>
+  <canvas id="canvas"></canvas>
+</div>
 
-        <div class="toolbar">
-          <button id="shoot-btn" class="btn btn-main" disabled>
-            <i class="fas fa-camera"></i>
-            Mulai Strip
-          </button>
+<div class="controls">
+  <select id="filter">
+    <option value="none">Normal</option>
+    <option value="grayscale(100%)">Black & White</option>
+    <option value="sepia(60%)">Warm</option>
+    <option value="contrast(120%)">Clean</option>
+    <option value="brightness(110%) saturate(120%)">Soft</option>
+  </select>
 
-          <span id="status" class="status" hidden>
-            Foto <span id="status-count">0</span>/4
-          </span>
-        </div>
-      </section>
+  <select id="background">
+    <option value="">Tanpa Background</option>
+    <option value="https://source.unsplash.com/800x600/?white-wall">White Wall</option>
+    <option value="https://source.unsplash.com/800x600/?minimal">Minimal</option>
+    <option value="https://source.unsplash.com/800x600/?studio">Studio</option>
+    <option value="https://source.unsplash.com/800x600/?pastel">Pastel</option>
+  </select>
 
-      <section class="panel panel-right">
-        <div class="result-bg">
-          <div class="orb orb-1"></div>
-          <div class="orb orb-2"></div>
-        </div>
+  <button onclick="takePhoto()">Ambil Foto</button>
+  <a id="download" download="photobooth.png">Download</a>
+</div>
 
-        <header class="panel-header">
-          <h2 class="app-title-small">Hasil Dewa Strip</h2>
-          <p class="app-subtitle-small">
-            Simpan atau cetak strip fotomu.
-          </p>
-        </header>
-
-        <div class="strip-shell">
-          <canvas id="strip-canvas" hidden></canvas>
-
-          <div id="loading" class="loading">
-            <i class="fas fa-spinner fa-spin"></i>
-            <span>Menunggu foto...</span>
-          </div>
-
-          <img id="strip-preview" alt="Dewa Photo Strip" hidden />
-        </div>
-
-        <div class="toolbar toolbar-bottom">
-          <button id="save-btn" class="btn btn-secondary" disabled>
-            <i class="fas fa-download"></i>
-            Simpan
-          </button>
-          <button id="print-btn" class="btn btn-secondary" disabled>
-            <i class="fas fa-print"></i>
-            Cetak
-          </button>
-          <button id="reset-btn" class="btn btn-ghost">
-            <i class="fas fa-redo"></i>
-            Ulangi
-          </button>
-        </div>
-      </section>
-    </main>
-
-    <!-- Latar print dari Unsplash (gradient abstrak gelap) -->
-    <img
-      id="print-bg-src"
-      src="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1400&q=80"
-      alt="Dewa Photo Background"
-      hidden
-    />
-
-    <script src="script.js"></script>
-  </body>
+<script src="script.js"></script>
+</body>
 </html>
-
