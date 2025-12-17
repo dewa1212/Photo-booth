@@ -4,87 +4,112 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dewa Photo Booth Strip - Pro Edition</title>
+
+    <!-- Font & Icon -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Main Style -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="booth-container">
-      <header>
-        <h1><i class="fas fa-camera-retro"></i> Dewa Photo Booth</h1>
+    <!-- Cover Background -->
+    <div class="cover-bg" id="coverBg">
+      <div class="cover-content">
+        <div class="icon-camera">
+          <i class="fas fa-camera-retro"></i>
+        </div>
+        <h1>Dewa Photo Booth</h1>
         <p>Buat kenangan seru dengan 4 jepretan dalam satu strip!</p>
-      </header>
-
-      <main>
-        <div class="booth-area" id="booth-area">
-          <div class="video-wrapper">
-            <video id="video" autoplay playsinline>
-              Video stream tidak tersedia.
-            </video>
-            <div class="filter-label">
-              <i class="fas fa-magic"></i>
-              <span id="current-filter">Normal</span>
-            </div>
-            <div id="feedback-overlay" class="feedback-overlay">
-              <span id="feedback-text"></span>
-            </div>
-            <div id="flash-overlay" class="flash-overlay"></div>
-          </div>
-
-          <canvas id="capture-canvas" style="display: none"></canvas>
-          <canvas id="strip-canvas" style="display: none"></canvas>
-
-          <div class="filter-menu">
-            <div class="filter-option active" data-filter="normal">Normal</div>
-            <div class="filter-option" data-filter="vintage">Vintage</div>
-            <div class="filter-option" data-filter="grayscale">B&W</div>
-            <div class="filter-option" data-filter="sepia">Sepia</div>
-            <div class="filter-option" data-filter="funky">Funky</div>
-          </div>
-
-          <div class="controls">
-            <button id="capture-btn" class="btn btn-primary">
-              <i class="fas fa-camera"></i> Mulai Foto Strip
-            </button>
-            <div id="progress-info" class="progress-info" style="display: none">
-              Foto <span id="current-photo-count">0</span> dari
-              <span id="total-photo-count">4</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="strip-result-area" id="strip-result-area">
-          <h2>Hasil Jepretanmu:</h2>
-          <div class="strip-wrapper">
-            <div id="loading-strip" class="loading-placeholder">
-              <i class="fas fa-spinner fa-spin"></i> Membuat strip foto...
-            </div>
-            <img
-              id="photo-strip"
-              alt="Hasil Photo Strip Anda"
-              style="display: none"
-            />
-          </div>
-          <div class="actions">
-            <button id="print-btn" class="btn btn-secondary" disabled>
-              <i class="fas fa-print"></i> Cetak
-            </button>
-            <button id="save-btn" class="btn btn-secondary" disabled>
-              <i class="fas fa-download"></i> Simpan
-            </button>
-            <button id="retake-btn" class="btn btn-tertiary">
-              <i class="fas fa-redo"></i> Ulangi
-            </button>
-          </div>
-        </div>
-      </main>
-
-      <footer>
-        <p>© 2025 Creative Photo Studios - <a href="#">DewaPhoto</a></p>
-      </footer>
+        <button class="start-btn" id="startBtn">
+          <i class="fas fa-play"></i> Mulai Sekarang
+        </button>
+      </div>
     </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <div class="booth-container">
+        <header>
+          <h1><i class="fas fa-camera-retro"></i> Dewa Photo Booth</h1>
+          <p>Buat kenangan seru dengan 4 jepretan dalam satu strip!</p>
+        </header>
+
+        <main>
+          <!-- Area Webcam & Kontrol -->
+          <div class="booth-area" id="booth-area">
+            <div class="video-wrapper">
+              <video id="video" autoplay playsinline>
+                Video stream tidak tersedia.
+              </video>
+              <div class="filter-label">
+                <i class="fas fa-magic"></i>
+                <span id="current-filter">Normal</span>
+              </div>
+              <div id="feedback-overlay" class="feedback-overlay">
+                <span id="feedback-text"></span>
+              </div>
+              <div id="flash-overlay" class="flash-overlay"></div>
+            </div>
+
+            <canvas id="capture-canvas" style="display: none"></canvas>
+            <canvas id="strip-canvas" style="display: none"></canvas>
+
+            <div class="filter-menu">
+              <div class="filter-option active" data-filter="normal">Normal</div>
+              <div class="filter-option" data-filter="vintage">Vintage</div>
+              <div class="filter-option" data-filter="grayscale">B&W</div>
+              <div class="filter-option" data-filter="sepia">Sepia</div>
+              <div class="filter-option" data-filter="funky">Funky</div>
+            </div>
+
+            <div class="controls">
+              <button id="capture-btn" class="btn btn-primary" disabled>
+                <i class="fas fa-camera"></i> Mulai Foto Strip
+              </button>
+              <div id="progress-info" class="progress-info" style="display: none">
+                Foto <span id="current-photo-count">0</span> dari
+                <span id="total-photo-count">4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Area Hasil Strip -->
+          <div class="strip-result-area" id="strip-result-area">
+            <h2>Hasil Jepretanmu:</h2>
+            <div class="strip-wrapper">
+              <div id="loading-strip" class="loading-placeholder">
+                <i class="fas fa-spinner fa-spin"></i> Membuat strip foto...
+              </div>
+              <img
+                id="photo-strip"
+                alt="Hasil Photo Strip Anda"
+                style="display: none"
+              />
+            </div>
+            <div class="actions">
+              <button id="print-btn" class="btn btn-secondary" disabled>
+                <i class="fas fa-print"></i> Cetak
+              </button>
+              <button id="save-btn" class="btn btn-secondary" disabled>
+                <i class="fas fa-download"></i> Simpan
+              </button>
+              <button id="retake-btn" class="btn btn-tertiary">
+                <i class="fas fa-redo"></i> Ulangi
+              </button>
+            </div>
+          </div>
+        </main>
+
+        <footer>
+          <p>© 2025 Creative Photo Studios - <a href="#">DewaPhoto</a></p>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Main Script -->
     <script src="script.js"></script>
   </body>
 </html>
