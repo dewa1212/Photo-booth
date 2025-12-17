@@ -1,87 +1,86 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const PHOTOS_PER_STRIP = 4;
-  const COUNTDOWN_TIME = 3;
-  const GAP = 10;
+  const PHOTOS = 4;
+  const COUNTDOWN = 3;
+  const GAP = 8;
   const MARGIN = 16;
 
   const video = document.getElementById("video");
   const captureCanvas = document.getElementById("capture-canvas");
   const stripCanvas = document.getElementById("strip-canvas");
-  const photoStrip = document.getElementById("photo-strip");
+  const stripPreview = document.getElementById("strip-preview");
 
-  const captureBtn = document.getElementById("capture-btn");
+  const shootBtn = document.getElementById("shoot-btn");
   const saveBtn = document.getElementById("save-btn");
   const printBtn = document.getElementById("print-btn");
-  const retakeBtn = document.getElementById("retake-btn");
+  const resetBtn = document.getElementById("reset-btn");
 
-  const countdownOverlay = document.getElementById("countdown-overlay");
-  const countdownText = document.getElementById("countdown-text");
-  const progress = document.getElementById("progress");
-  const currentCount = document.getElementById("current-count");
+  const countdown = document.getElementById("countdown");
+  const countdownNumber = document.getElementById("countdown-number");
+  const status = document.getElementById("status");
+  const statusCount = document.getElementById("status-count");
   const loading = document.getElementById("loading");
 
-  let stream = null;
   let isCapturing = false;
   let photos = [];
   let stripDataUrl = null;
 
   async function initCamera() {
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
         audio: false,
       });
       video.srcObject = stream;
       await video.play();
-      captureBtn.disabled = false;
-    } catch (err) {
-      console.error(err);
+      shootBtn.disabled = false;
+    } catch (e) {
+      console.error(e);
       alert(
         "Tidak bisa akses webcam.\nPastikan izin kamera aktif dan tidak dipakai aplikasi lain."
       );
-      captureBtn.disabled = true;
+      shootBtn.disabled = true;
     }
   }
 
-  function startStripCapture() {
+  function startStrip() {
     if (isCapturing) return;
     isCapturing = true;
     photos = [];
     stripDataUrl = null;
 
-    captureBtn.disabled = true;
+    shootBtn.disabled = true;
     saveBtn.disabled = true;
     printBtn.disabled = true;
 
-    progress.hidden = false;
-    currentCount.textContent = "0";
+    status.hidden = false;
+    statusCount.textContent = "0";
 
     loading.hidden = false;
-    photoStrip.hidden = true;
+    stripPreview.hidden = true;
 
-    captureNext(1);
+    captureWithCountdown(1);
   }
 
-  function captureNext(n) {
-    currentCount.textContent = n.toString();
-    let countdown = COUNTDOWN_TIME;
+  function captureWithCountdown(n) {
+    statusCount.textContent = String(n);
+    let timeLeft = COUNTDOWN;
 
-    countdownText.textContent = countdown;
-    countdownOverlay.classList.add("show");
+    countdownNumber.textContent = timeLeft;
+    countdown.classList.add("show");
 
     const timer = setInterval(() => {
-      countdown -= 1;
-      if (countdown > 0) {
-        countdownText.textContent = countdown;
-      } else if (countdown === 0) {
-        countdownText.textContent = "Senyum!";
+      timeLeft -= 1;
+      if (timeLeft > 0) {
+        countdownNumber.textContent = timeLeft;
+      } else if (timeLeft === 0) {
+        countdownNumber.textContent = "Senyum!";
       } else {
         clearInterval(timer);
-        countdownOverlay.classList.remove("show");
+        countdown.classList.remove("show");
         grabFrame();
 
-        if (n < PHOTOS_PER_STRIP) {
-          setTimeout(() => captureNext(n + 1), 800);
+        if (n < PHOTOS) {
+          setTimeout(() => captureWithCountdown(n + 1), 800);
         } else {
           finishStrip();
         }
@@ -109,16 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function finishStrip() {
-    // tunggu image load (simple delay cukup untuk kasus ini)
-    setTimeout(() => {
-      buildStrip();
-    }, 400);
+    // beri waktu image load
+    setTimeout(() => buildStrip(), 400);
   }
 
   function buildStrip() {
     if (!photos.length) {
       isCapturing = false;
-      captureBtn.disabled = false;
+      shootBtn.disabled = false;
       return;
     }
 
@@ -126,12 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const h = photos[0].height || captureCanvas.height;
 
     stripCanvas.width = w + MARGIN * 2;
-    stripCanvas.height =
-      PHOTOS_PER_STRIP * h + (PHOTOS_PER_STRIP - 1) * GAP + MARGIN * 2;
+    stripCanvas.height = PHOTOS * h + (PHOTOS - 1) * GAP + MARGIN * 2;
 
     const ctx = stripCanvas.getContext("2d");
 
-    // kartu putih minimalis untuk strip
+    // kartu strip
     ctx.fillStyle = "#f9fafb";
     ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
 
@@ -143,16 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
       stripCanvas.height - 8
     );
 
-    // isi
     photos.forEach((img, i) => {
       const x = (stripCanvas.width - w) / 2;
       const y = MARGIN + i * (h + GAP);
       ctx.drawImage(img, x, y, w, h);
     });
 
-    // logo kecil “Dewa Photo” di bawah
     ctx.fillStyle = "#6b7280";
-    ctx.font = "14px system-ui";
+    ctx.font = "13px system-ui";
     ctx.textAlign = "center";
     ctx.fillText(
       "Dewa Photo",
@@ -161,15 +155,15 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     stripDataUrl = stripCanvas.toDataURL("image/png");
-    photoStrip.src = stripDataUrl;
-    photoStrip.hidden = false;
+    stripPreview.src = stripDataUrl;
+    stripPreview.hidden = false;
     loading.hidden = true;
 
     saveBtn.disabled = false;
     printBtn.disabled = false;
-    captureBtn.disabled = false;
+    shootBtn.disabled = false;
+    status.hidden = true;
     isCapturing = false;
-    progress.hidden = true;
   }
 
   function saveStrip() {
@@ -188,19 +182,19 @@ document.addEventListener("DOMContentLoaded", () => {
     window.print();
   }
 
-  function resetResult() {
+  function resetStrip() {
     photos = [];
     stripDataUrl = null;
-    photoStrip.hidden = true;
+    stripPreview.hidden = true;
     loading.hidden = false;
     saveBtn.disabled = true;
     printBtn.disabled = true;
   }
 
-  captureBtn.addEventListener("click", startStripCapture);
+  shootBtn.addEventListener("click", startStrip);
   saveBtn.addEventListener("click", saveStrip);
   printBtn.addEventListener("click", printStrip);
-  retakeBtn.addEventListener("click", resetResult);
+  resetBtn.addEventListener("click", resetStrip);
 
   initCamera();
 });
