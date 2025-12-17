@@ -11,50 +11,62 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="wrapper">
-      <section class="camera-card">
-        <h1 class="title">
-          <i class="fas fa-camera-retro"></i> Dewa Photo Booth
-        </h1>
-        <p class="subtitle">4 jepretan jadi satu strip.</p>
+    <main class="page">
+      <section class="panel panel-left">
+        <header class="panel-header">
+          <h1 class="app-title">
+            <i class="fas fa-camera-retro"></i>
+            Dewa Photo Booth
+          </h1>
+          <p class="app-subtitle">Ambil 4 foto, jadikan satu strip.</p>
+        </header>
 
-        <video id="video" autoplay playsinline>Webcam tidak tersedia.</video>
-        <canvas id="capture-canvas" hidden></canvas>
-        <canvas id="strip-canvas" hidden></canvas>
+        <div class="video-shell">
+          <video id="video" autoplay playsinline>Webcam tidak tersedia.</video>
+          <canvas id="capture-canvas" hidden></canvas>
 
-        <div id="countdown-overlay" class="countdown-overlay">
-          <span id="countdown-text"></span>
+          <div id="countdown" class="countdown">
+            <span id="countdown-number"></span>
+          </div>
         </div>
 
-        <div class="controls">
-          <button id="capture-btn" class="btn btn-primary" disabled>
+        <div class="toolbar">
+          <button id="shoot-btn" class="btn btn-main" disabled>
             <i class="fas fa-camera"></i>
-            Mulai Foto Strip
+            Mulai Strip
           </button>
-          <span id="progress" class="progress" hidden>
-            Foto <span id="current-count">0</span>/4
+
+          <span id="status" class="status" hidden>
+            Foto <span id="status-count">0</span>/4
           </span>
         </div>
       </section>
 
-      <section class="result-card" id="result-card">
+      <section class="panel panel-right">
         <div class="result-bg">
-          <div class="result-glow"></div>
+          <div class="orb orb-1"></div>
+          <div class="orb orb-2"></div>
         </div>
 
-        <h2 class="result-title">Hasil Dewa Photo Strip</h2>
-        <p class="result-subtitle">
-          Simpan atau langsung cetak kenangan kamu.
-        </p>
+        <header class="panel-header">
+          <h2 class="app-title-small">Hasil Dewa Strip</h2>
+          <p class="app-subtitle-small">
+            Simpan atau cetak strip fotomu.
+          </p>
+        </header>
 
-        <div class="strip-frame">
+        <div class="strip-shell">
+          <canvas id="strip-canvas" hidden></canvas>
+
           <div id="loading" class="loading">
-            <i class="fas fa-spinner fa-spin"></i> Menyiapkan strip...
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Menunggu foto...</span>
           </div>
-          <img id="photo-strip" alt="Dewa Photo Strip" hidden />
+
+          <img id="strip-preview" alt="Dewa Photo Strip" hidden />
         </div>
 
-        <div class="actions">
+        <div class="toolbar toolbar-bottom">
           <button id="save-btn" class="btn btn-secondary" disabled>
             <i class="fas fa-download"></i>
             Simpan
@@ -63,7 +75,7 @@
             <i class="fas fa-print"></i>
             Cetak
           </button>
-          <button id="retake-btn" class="btn btn-ghost">
+          <button id="reset-btn" class="btn btn-ghost">
             <i class="fas fa-redo"></i>
             Ulangi
           </button>
@@ -71,14 +83,14 @@
       </section>
     </main>
 
-    <!-- Latar belakang untuk versi cetak (ganti URL dengan gambar Unsplash bertema studio / dewa) -->
+    <!-- Latar print dari Unsplash (gradient abstrak gelap) -->
     <img
-      id="print-bg"
-      src="https://images.unsplash.com/photo-1518895949257-7621c3c786d4?auto=format&fit=crop&w=900&q=80"
+      id="print-bg-src"
+      src="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1400&q=80"
       alt="Dewa Photo Background"
       hidden
     />
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
