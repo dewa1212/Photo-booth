@@ -1,10 +1,4 @@
-/**
- * Photobooth Modern
- * Aplikasi photobooth dengan fitur penggantian background dan frame
- * Dibuat dengan HTML, CSS, dan JavaScript murni
- */
 
-// Inisialisasi variabel global
 let cameraStream = null;
 let currentBackground = "#ffffff";
 let currentFrame = "none";
