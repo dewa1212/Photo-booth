@@ -32,30 +32,18 @@
       </header>
 
       <main>
-        <!-- Area kamera dan preview -->
         <div class="camera-section">
           <div class="camera-container">
-            <!-- Loading animation saat kamera dimuat -->
             <div class="camera-loading" id="cameraLoading">
               <div class="spinner"></div>
               <p>Mengaktifkan kamera...</p>
             </div>
-
-            <!-- Video untuk preview kamera -->
             <video id="cameraPreview" autoplay playsinline></video>
-
-            <!-- Canvas untuk menangkap dan memproses foto -->
             <canvas id="photoCanvas"></canvas>
-
-            <!-- Efek flash saat mengambil foto -->
             <div class="flash-effect" id="flashEffect"></div>
-
-            <!-- Countdown sebelum foto diambil -->
             <div class="countdown-overlay" id="countdownOverlay">
               <div class="countdown-number" id="countdownNumber">3</div>
             </div>
-
-            <!-- Preview hasil foto -->
             <div class="photo-preview" id="photoPreview">
               <h3>Preview Foto</h3>
               <img id="previewImage" src="" alt="Preview Foto" />
@@ -257,7 +245,6 @@
       </footer>
     </div>
 
-    <!-- Audio untuk efek suara kamera -->
     <audio id="cameraSound" preload="auto">
       <source
         src="https://assets.mixkit.co/sfx/preview/mixkit-camera-shutter-click-1133.mp3"
@@ -268,3 +255,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+
