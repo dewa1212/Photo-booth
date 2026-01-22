@@ -1,40 +1,270 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Simple Photo Booth</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photobooth Modern</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1><i class="fas fa-camera"></i> Photobooth Modern</h1>
+        <p class="subtitle">
+          Ambil maksimal 6 foto dan ganti background sesuai keinginan Anda
+        </p>
+        <div class="photo-counter">
+          <span id="photoCount">0/6 Foto</span>
+          <div class="counter-bar">
+            <div class="counter-fill" id="counterFill"></div>
+          </div>
+        </div>
+      </header>
 
-<h2>📸 Simple Photo Booth</h2>
+      <main>
+        <!-- Area kamera dan preview -->
+        <div class="camera-section">
+          <div class="camera-container">
+            <!-- Loading animation saat kamera dimuat -->
+            <div class="camera-loading" id="cameraLoading">
+              <div class="spinner"></div>
+              <p>Mengaktifkan kamera...</p>
+            </div>
 
-<div class="booth">
-  <video id="video" autoplay></video>
-  <canvas id="canvas"></canvas>
-</div>
+            <!-- Video untuk preview kamera -->
+            <video id="cameraPreview" autoplay playsinline></video>
 
-<div class="controls">
-  <select id="filter">
-    <option value="none">Normal</option>
-    <option value="grayscale(100%)">Black & White</option>
-    <option value="sepia(60%)">Warm</option>
-    <option value="contrast(120%)">Clean</option>
-    <option value="brightness(110%) saturate(120%)">Soft</option>
-  </select>
+            <!-- Canvas untuk menangkap dan memproses foto -->
+            <canvas id="photoCanvas"></canvas>
 
-  <select id="background">
-    <option value="">Tanpa Background</option>
-    <option value="https://source.unsplash.com/800x600/?white-wall">White Wall</option>
-    <option value="https://source.unsplash.com/800x600/?minimal">Minimal</option>
-    <option value="https://source.unsplash.com/800x600/?studio">Studio</option>
-    <option value="https://source.unsplash.com/800x600/?pastel">Pastel</option>
-  </select>
+            <!-- Efek flash saat mengambil foto -->
+            <div class="flash-effect" id="flashEffect"></div>
 
-  <button onclick="takePhoto()">Ambil Foto</button>
-  <a id="download" download="photobooth.png">Download</a>
-</div>
+            <!-- Countdown sebelum foto diambil -->
+            <div class="countdown-overlay" id="countdownOverlay">
+              <div class="countdown-number" id="countdownNumber">3</div>
+            </div>
 
-<script src="script.js"></script>
-</body>
+            <!-- Preview hasil foto -->
+            <div class="photo-preview" id="photoPreview">
+              <h3>Preview Foto</h3>
+              <img id="previewImage" src="" alt="Preview Foto" />
+              <div class="preview-actions">
+                <button id="closePreview" class="btn">
+                  <i class="fas fa-times"></i> Tutup
+                </button>
+                <button id="downloadPreview" class="btn btn-primary">
+                  <i class="fas fa-download"></i> Download
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel kontrol -->
+          <div class="controls">
+            <!-- Tombol aksi utama -->
+            <div class="main-controls">
+              <button id="startCamera" class="btn btn-primary">
+                <i class="fas fa-video"></i> Aktifkan Kamera
+              </button>
+              <button id="takePhoto" class="btn btn-success" disabled>
+                <i class="fas fa-camera"></i> Ambil Foto
+              </button>
+              <button id="retakePhoto" class="btn btn-warning" disabled>
+                <i class="fas fa-redo"></i> Ulangi Foto
+              </button>
+              <button id="printPhoto" class="btn btn-print" disabled>
+                <i class="fas fa-print"></i> Cetak Foto
+              </button>
+              <button id="clearAll" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Hapus Semua
+              </button>
+            </div>
+
+            <!-- Pilihan background -->
+            <div class="background-controls">
+              <h3><i class="fas fa-image"></i> Ganti Background</h3>
+
+              <!-- Pilihan warna solid -->
+              <div class="control-group">
+                <h4>Warna Solid</h4>
+                <div class="color-options">
+                  <div
+                    class="color-option"
+                    style="background-color: #ffffff"
+                    data-color="#ffffff"
+                    title="Putih"
+                  ></div>
+                  <div
+                    class="color-option"
+                    style="background-color: #1e88e5"
+                    data-color="#1e88e5"
+                    title="Biru"
+                  ></div>
+                  <div
+                    class="color-option"
+                    style="background-color: #43a047"
+                    data-color="#43a047"
+                    title="Hijau"
+                  ></div>
+                  <div
+                    class="color-option"
+                    style="background-color: #f44336"
+                    data-color="#f44336"
+                    title="Merah"
+                  ></div>
+                  <div
+                    class="color-option"
+                    style="background-color: #ffb300"
+                    data-color="#ffb300"
+                    title="Kuning"
+                  ></div>
+                  <div
+                    class="color-option"
+                    style="background-color: #000000"
+                    data-color="#000000"
+                    title="Hitam"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Pilihan background preset -->
+              <div class="control-group">
+                <h4>Background Preset</h4>
+                <div class="preset-options">
+                  <div class="preset-option" data-preset="beach">
+                    <img
+                      src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIGZpbGw9IiM0RUI4RjkiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxMCIgZmlsbD0iI0ZGQ0MwMCIvPjxwYXRoIGQ9Ik0wIDQwSDEwMEw4NSA1NUgxNUwwIDQwWiIgZmlsbD0iI0ZGQ0U5QiIvPjwvc3ZnPg=="
+                      alt="Pantai"
+                    />
+                    <span>Pantai</span>
+                  </div>
+                  <div class="preset-option" data-preset="nature">
+                    <img
+                      src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIGZpbGw9IiM2OEE0NTMiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjIwIiByPSIxMiIgZmlsbD0iIzRFQjhGOSIvPjxjaXJjbGUgY3g9IjcwIiBjeT0iMTUiIHI9IjgiIGZpbGw9IiM0RUI4RjkiLz48cmVjdCB5PSIzNSIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyNSIgZmlsbD0iIzRFQjhGOSIvPjwvc3ZnPg=="
+                      alt="Alam"
+                    />
+                    <span>Alam</span>
+                  </div>
+                  <div class="preset-option" data-preset="city">
+                    <img
+                      src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIGZpbGw9IiMzMzMzMzMiLz48cmVjdCB4PSIxNSIgeT0iMjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0ZGRkZGRiIvPjxyZWN0IHg9IjQwIiB5PSIxNSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjM1IiBmaWxsPSIjRkZGRkZGIi8+PHJlY3QgeD0iNjUiIHk9IjI1IiB3aWR0aD0iMjAiIGhlaWdodD0iMjUiIGZpbGw9IiNGRkZGRkYiLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjEwIiByPSI1IiBmaWxsPSIjRkZDRjAwIi8+PC9zdmc+"
+                      alt="Kota"
+                    />
+                    <span>Kota</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upload background -->
+              <div class="control-group">
+                <h4>Upload Background</h4>
+                <div class="upload-area" id="uploadArea">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Klik untuk upload gambar</p>
+                  <input type="file" id="backgroundUpload" accept="image/*" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Pilihan frame -->
+            <div class="frame-controls">
+              <h3><i class="fas fa-square"></i> Pilih Frame</h3>
+              <div class="frame-options">
+                <div class="frame-option" data-frame="none">
+                  <div class="frame-preview no-frame">Tidak Ada</div>
+                  <span>Tanpa Frame</span>
+                </div>
+                <div class="frame-option" data-frame="simple">
+                  <div class="frame-preview simple-frame"></div>
+                  <span>Frame Sederhana</span>
+                </div>
+                <div class="frame-option" data-frame="polaroid">
+                  <div class="frame-preview polaroid-frame"></div>
+                  <span>Polaroid</span>
+                </div>
+                <div class="frame-option" data-frame="elegant">
+                  <div class="frame-preview elegant-frame"></div>
+                  <span>Elegan</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pilihan ukuran cetak -->
+            <div class="print-controls">
+              <h3><i class="fas fa-print"></i> Opsi Cetak</h3>
+              <div class="print-options">
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="3R" checked />
+                  <span>3R (8.9x12.7 cm)</span>
+                </label>
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="4R" />
+                  <span>4R (10x15 cm)</span>
+                </label>
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="5R" />
+                  <span>5R (12.7x17.8 cm)</span>
+                </label>
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="6R" />
+                  <span>6R (15.2x20.3 cm)</span>
+                </label>
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="A4" />
+                  <span>A4 (21x29.7 cm)</span>
+                </label>
+                <label class="print-option">
+                  <input type="radio" name="printSize" value="A5" />
+                  <span>A5 (14.8x21 cm)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Galeri foto - sekarang ditempatkan di bawah area kamera -->
+        <div class="gallery-section">
+          <h3><i class="fas fa-images"></i> Galeri Foto (Maks 6)</h3>
+          <div class="gallery-container" id="galleryContainer">
+            <!-- Foto-foto akan ditampilkan di sini -->
+            <div class="gallery-placeholder">
+              <i class="fas fa-camera"></i>
+              <p>Foto akan muncul di sini</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          © 2023 Photobooth Modern | Dibuat dengan HTML, CSS, dan JavaScript
+          murni
+        </p>
+        <p class="hint">
+          Gunakan browser yang mendukung getUserMedia untuk pengalaman terbaik
+        </p>
+      </footer>
+    </div>
+
+    <!-- Audio untuk efek suara kamera -->
+    <audio id="cameraSound" preload="auto">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-camera-shutter-click-1133.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script src="script.js"></script>
+  </body>
 </html>
