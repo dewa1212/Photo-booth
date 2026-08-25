@@ -1,151 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Photobooth Modern</title>
-    <link rel="stylesheet" href="style.css"/>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      sty
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ec4d35" />
+    <title>DEWA — Photo Booth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .music-player{position:fixed;z-index:30;right:18px;top:84px;width:min(330px,calc(100vw - 36px));background:#f5f0e7;border:1px solid #182018;box-shadow:6px 6px 0 #182018;padding:20px;display:none}.music-player.open{display:block}.music-player .modal-close{top:5px;right:9px}.music-title{font:700 25px 'Fraunces',serif;letter-spacing:-.04em;margin:4px 0 14px}.music-title span{font:400 16px 'DM Sans',sans-serif}.music-player iframe{width:100%;height:152px;border:0;display:block}.music-player a{display:block;color:#182018;font:10px 'DM Mono',monospace;letter-spacing:.6px;margin-top:12px}.caption-input{width:100%;padding:9px;border:1px solid #d5cec1;background:transparent;font:11px 'DM Sans',sans-serif}.stickers{display:flex;gap:5px;margin-top:7px}.sticker{flex:1;border:1px solid #d5cec1;background:transparent;padding:6px;cursor:pointer}.sticker.active{background:#182018;color:#f5f0e7}
+    </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1><i class="fas fa-camera"></i> Photobooth Modern</h1>
-        <div class="photo-counter">
-          <span id="photoCount">0/6 Foto</span>
-          <div class="counter-bar">
-            <div class="counter-fill" id="counterFill"></div>
-          </div>
+    <main class="booth-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="DEWA Photo Booth">
+          <span class="brand-mark">D</span>
+          <span>DEWA<br /><small>PHOTO BOOTH</small></span>
+        </a>
+        <p class="header-note"><span></span> MOMEN KECIL, CERITA BESAR</p>
+        <button class="sound-button" id="soundButton" type="button" aria-expanded="false" title="Buka musik Teh Hijau dari Spotify">MUSIC <b>OFF</b></button>
+      </header>
+
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">01 / SELF-SERVICE PORTRAITS</p>
+          <h1>Ambil jeda.<br /><em>Jadilah</em> kenangan.</h1>
+          <p class="intro">Sebuah ruang kecil untuk wajah-wajah besar, tawa yang spontan, dan foto yang ingin kamu simpan lebih lama.</p>
+          <a class="text-link" href="#booth">MASUK KE BOOTH <span>↓</span></a>
         </div>
-      </div>
-
-      <div class="main-grid">
-        <div class="camera-wrapper">
-          <div class="camera-container">
-            <div class="camera-loading" id="cameraLoading">
-              <div class="spinner"></div>
-              <p>Mengaktifkan kamera...</p>
-            </div>
-            <video id="cameraPreview" autoplay playsinline></video>
-            <canvas id="photoCanvas"></canvas>
-            <div class="flash-effect" id="flashEffect"></div>
-            <div class="countdown-overlay" id="countdownOverlay">
-              <div class="countdown-number" id="countdownNumber">3</div>
-            </div>
-          </div>
-
-          <div class="controls">
-            <button id="startCamera" class="btn btn-primary">
-              <i class="fas fa-video"></i> Aktifkan Kamera
-            </button>
-            <button id="takePhoto" class="btn btn-success" disabled>
-              <i class="fas fa-camera"></i> Ambil Foto
-            </button>
-            <button id="clearAll" class="btn btn-danger">
-              <i class="fas fa-trash"></i> Hapus Semua
-            </button>
-            <button id="generateStrip" class="btn btn-warning" disabled>
-              <i class="fas fa-images"></i> Buat Photo Strip
-            </button>
-          </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="sun"></div><div class="arch arch-back"></div><div class="arch arch-front"></div>
+          <p>EST.<br />2026</p>
         </div>
+      </section>
 
-        <div class="sidebar">
-          <div class="panel">
-            <h3><i class="fas fa-magic"></i> Filter</h3>
-            <div class="filter-grid">
-              <div class="filter-option active" data-filter="none">Normal</div>
-              <div class="filter-option" data-filter="grayscale">B&W</div>
-              <div class="filter-option" data-filter="sepia">Sepia</div>
-              <div class="filter-option" data-filter="vintage">Vintage</div>
-              <div class="filter-option" data-filter="bright">Bright</div>
-              <div class="filter-option" data-filter="contrast">Contrast</div>
-              <div class="filter-option" data-filter="warm">Warm</div>
-              <div class="filter-option" data-filter="cool">Cool</div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3><i class="fas fa-palette"></i> Background</h3>
-            <div class="color-grid">
-              <div
-                class="color-option active"
-                style="background: #ffffff; border: 1px solid #e5e7eb"
-                data-color="#ffffff"
-              ></div>
-              <div
-                class="color-option"
-                style="background: #fef3c7"
-                data-color="#fef3c7"
-              ></div>
-              <div
-                class="color-option"
-                style="background: #dbeafe"
-                data-color="#dbeafe"
-              ></div>
-              <div
-                class="color-option"
-                style="background: #fce7f3"
-                data-color="#fce7f3"
-              ></div>
-              <div
-                class="color-option"
-                style="background: #d1fae5"
-                data-color="#d1fae5"
-              ></div>
-              <div
-                class="color-option"
-                style="background: #1f2937"
-                data-color="#1f2937"
-              ></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3><i class="fas fa-th"></i> Layout Strip</h3>
-            <div class="layout-grid">
-              <div class="layout-option active" data-layout="2x2">2x2</div>
-              <div class="layout-option" data-layout="2x3">2x3</div>
-              <div class="layout-option" data-layout="1x4">1x4</div>
-            </div>
-          </div>
+      <section class="booth" id="booth">
+        <div class="section-heading">
+          <p class="eyebrow">02 / THE CAMERA</p>
+          <h2>Siap saat kamu siap.</h2>
+          <p>Izinkan akses kamera, pilih warna, lalu tekan tombol di bawah. Jangan terlalu serius, ya.</p>
         </div>
-      </div>
-
-      <div class="gallery">
-        <h3><i class="fas fa-images"></i> Galeri Foto (Maks 6)</h3>
-        <div class="gallery-grid" id="galleryGrid">
-          <div class="gallery-placeholder">
-            <i
-              class="fas fa-camera"
-              style="font-size: 2rem; display: block; margin-bottom: 0.5rem"
-            ></i>
-            <p>Foto akan muncul di sini</p>
+        <div class="booth-grid">
+          <div class="camera-stage" id="cameraStage">
+            <div class="stage-top"><span class="live-dot"></span><span id="cameraStatus">KAMERA BELUM AKTIF</span><span id="timerText">00:00</span></div>
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="canvas" hidden></canvas>
+            <div class="camera-placeholder" id="cameraPlaceholder"><span class="camera-icon">◉</span><strong>Ruang ini milikmu.</strong><small>Tarik napas, pilih mood, lalu buat momennya.</small></div>
+            <div class="countdown" id="countdown" aria-live="assertive"></div>
+            <div class="flash" id="flash"></div>
+            <div class="stage-bottom"><span>DEWA PHOTO BOOTH</span><button class="stage-action" id="fullscreenButton" type="button">FULLSCREEN ↗</button></div>
           </div>
+          <aside class="controls">
+            <div class="control-block"><span class="control-label">PILIH TONE</span><div class="filters" id="filters">
+              <button class="filter active" data-filter="none" type="button"><i class="swatch original"></i>Asli</button>
+              <button class="filter" data-filter="warm" type="button"><i class="swatch warm"></i>Hangat</button>
+              <button class="filter" data-filter="mono" type="button"><i class="swatch mono"></i>Mono</button>
+              <button class="filter" data-filter="dream" type="button"><i class="swatch dream"></i>Dream</button>
+              <button class="filter" data-filter="noir" type="button"><i class="swatch noir"></i>Noir</button>
+              <button class="filter" data-filter="pop" type="button"><i class="swatch pop"></i>Pop</button>
+              <button class="filter" data-filter="faded" type="button"><i class="swatch faded"></i>Faded</button>
+            </div></div>
+            <div class="control-block"><span class="control-label">PILIH FORMAT</span><div class="formats" id="formats">
+              <button class="format active" data-format="square" type="button">01 <small>1:1<br />CLASSIC</small></button>
+              <button class="format" data-format="portrait" type="button">02 <small>4:5<br />PORTRAIT</small></button>
+            </div></div>
+            <div class="control-block"><span class="control-label">BERAPA JEPRETAN?</span><div class="shot-count" id="shotCount"><button class="shot active" data-shots="1" type="button">1 FOTO</button><button class="shot" data-shots="2" type="button">2 FOTO</button><button class="shot" data-shots="3" type="button">3 FOTO</button><button class="shot" data-shots="4" type="button">4 FOTO</button></div><small class="help-text">Setiap foto diambil setelah hitung mundur 3 detik.</small></div>
+            <div class="control-block"><span class="control-label">JEDA HITUNG MUNDUR</span><div class="timer-options" id="timerOptions"><button class="timer active" data-timer="3" type="button">3 DETIK</button><button class="timer" data-timer="5" type="button">5 DETIK</button><button class="timer" data-timer="10" type="button">10 DETIK</button></div></div>
+            <div class="control-block"><span class="control-label">PESAN & STIKER</span><input class="caption-input" id="captionInput" maxlength="32" placeholder="Contoh: Dita & Raka · 2027" /><div class="stickers" id="stickers"><button class="sticker active" data-sticker="✦" type="button">✦</button><button class="sticker" data-sticker="♥" type="button">♥</button><button class="sticker" data-sticker="☻" type="button">☻</button><button class="sticker" data-sticker="✿" type="button">✿</button></div></div>
+            <div class="control-block"><span class="control-label">PILIH COVER / BACKGROUND</span><div class="cover-tabs" id="coverTabs"><button class="cover-tab active" data-category="studio" type="button">STUDIO</button><button class="cover-tab" data-category="nature" type="button">NATURE</button><button class="cover-tab" data-category="party" type="button">PARTY</button></div><div class="covers" id="covers"></div></div>
+            <div class="control-block"><span class="control-label">TATA LETAK HASIL</span><div class="layouts" id="layouts"><button class="layout active" data-layout="single" type="button"><b>01</b> Portrait tunggal</button><button class="layout" data-layout="strip" type="button"><b>02</b> Photo strip</button><button class="layout" data-layout="duo" type="button"><b>03</b> Dua kenangan</button></div></div>
+            <button class="primary-action" id="cameraButton" type="button"><span class="button-icon">↗</span><span>NYALAKAN KAMERA</span></button>
+            <button class="secondary-action" id="flipCameraButton" type="button" hidden>↻ GANTI KAMERA</button>
+            <button class="capture-action" id="captureButton" type="button" disabled><span></span> MULAI SESI FOTO</button>
+            <p class="privacy-note">Kameramu hanya dipakai di perangkat ini. Kami tidak menyimpan apa pun.</p>
+          </aside>
         </div>
-      </div>
-    </div>
+      </section>
 
+      <section class="gallery-section" id="gallery">
+        <div class="gallery-heading"><div><p class="eyebrow">03 / YOUR LITTLE ARCHIVE</p><h2>Hasil jepretanmu.</h2></div><p id="galleryCount">BELUM ADA FOTO — MULAI SATU!</p></div>
+        <div class="gallery" id="galleryEmpty"><div class="empty-card"><span>✦</span><p>Foto yang kamu ambil akan tinggal di sini.</p></div></div>
+        <div class="gallery photos" id="photoGallery" hidden></div>
+      </section>
 
-    <div class="preview-modal" id="previewModal">
-      <div class="preview-content">
-        <img id="previewImage" class="preview-image" src="" alt="Preview" />
-        <div class="preview-actions">
-          <button id="closePreview" class="btn btn-danger">
-            <i class="fas fa-times"></i> Tutup
-          </button>
-          <button id="downloadPreview" class="btn btn-success">
-            <i class="fas fa-download"></i> Download
-          </button>
-        </div>
-      </div>
-    </div>
+      <footer><p>MADE FOR THE MOMENT <span>✦</span> DEWA PHOTO BOOTH</p><p>© 2026–2027 — KEEP WHAT MATTERS</p></footer>
+    </main>
+    <aside class="music-player" id="musicPlayer" aria-hidden="true"><button class="modal-close" id="musicClose" type="button" aria-label="Tutup pemutar">×</button><p class="eyebrow">MUSIC FOR THE MOMENT</p><p class="music-title">Teh Hijau <span>— Tulus</span></p><iframe src="https://open.spotify.com/embed/track/4R9G7azXaZe93KTX65P9fU?utm_source=generator" title="Teh Hijau oleh Tulus di Spotify" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><a href="https://open.spotify.com/track/4R9G7azXaZe93KTX65P9fU" target="_blank" rel="noopener noreferrer">BUKA DI SPOTIFY ↗</a></aside>
+    <section class="review-modal" id="reviewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="review-panel"><button class="modal-close" id="reviewClose" type="button" aria-label="Tutup">×</button><p class="eyebrow">PILIH MOMENMU</p><h2 id="reviewTitle">Yang mana yang ikut pulang?</h2><p class="review-copy">Pilih foto untuk hasil akhir. Kamu juga bisa mengulang satu foto sebelum lanjut.</p><div class="review-grid" id="reviewGrid"></div><div class="review-actions"><button class="secondary-action" id="qrButton" type="button">▦ QR BOOTH</button><button class="primary-action" id="makePrintButton" type="button">BUAT HASIL FOTO →</button></div></div></section>
+    <section class="qr-modal" id="qrModal" aria-hidden="true" role="dialog" aria-modal="true"><div class="qr-panel"><button class="modal-close" id="qrClose" type="button" aria-label="Tutup">×</button><p class="eyebrow">DEWA DI PERANGKAT LAIN</p><h2>Pindai untuk buka booth.</h2><img id="qrImage" alt="QR code menuju DEWA Photo Booth" /><p>Untuk mengunduh foto hasil dari perangkat lain dibutuhkan penyimpanan server. QR ini membuka booth yang sama.</p></div></section>
+    <div class="toast" id="toast" role="status"></div>
     <script src="script.js"></script>
+    <script>
+      const musicButton = document.querySelector('#soundButton');
+      const musicPlayer = document.querySelector('#musicPlayer');
+      musicButton.onclick = () => {
+        const isOpen = musicPlayer.classList.toggle('open');
+        musicPlayer.setAttribute('aria-hidden', String(!isOpen));
+        musicButton.setAttribute('aria-expanded', String(isOpen));
+        musicButton.innerHTML = `MUSIC <b>${isOpen ? 'ON' : 'OFF'}</b>`;
+      };
+      document.querySelector('#musicClose').onclick = () => musicButton.click();
+    </script>
   </body>
 </html>
-
-
