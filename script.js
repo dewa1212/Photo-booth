@@ -19,30 +19,127 @@ const filters = {
   dream: 'sepia(.18) saturate(.8) hue-rotate(285deg) brightness(1.08)',
   noir: 'grayscale(1) contrast(1.45) brightness(.9)',
   pop: 'saturate(1.7) contrast(1.12)',
-  faded: 'sepia(.2) saturate(.7) brightness(1.12) contrast(.88)'
+  faded: 'sepia(.2) saturate(.7) brightness(1.12) contrast(.88)',
+  vintage: 'sepia(.45) contrast(1.1) saturate(1.25) hue-rotate(-12deg)',
+  cyber: 'hue-rotate(160deg) saturate(1.65) contrast(1.15)',
+  sepia: 'sepia(0.85) contrast(1.05) saturate(1.1)',
+  cool: 'hue-rotate(190deg) saturate(1.2) contrast(1.05)',
+  sunset: 'sepia(.3) saturate(1.55) hue-rotate(330deg) contrast(1.1)',
+  emerald: 'hue-rotate(90deg) saturate(1.2) contrast(1.1) sepia(0.15)',
+  soft: 'brightness(1.08) contrast(.92) saturate(.92) sepia(.12)',
+  dramatic: 'contrast(1.5) saturate(1.35) brightness(.92)'
 };
+
+const photoSet = (prefix, ids) => ids.map((id, i) => [
+  `${prefix}${i+1}`, `${prefix} ${i+1}`,
+  `url(https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=700&q=80)`
+]);
 
 const covers = {
   studio: [
     ['none', 'Tanpa cover', ''],
-    ['paper', 'Kertas', 'linear-gradient(135deg,#f5efe6,#d8cab9)'],
-    ['sunset', 'Senja', 'linear-gradient(135deg,#f5bc3a,#ec583e)'],
-    ['check', 'Kotak', 'repeating-conic-gradient(#1f3027 0 25%,#ead6a8 0 50%)']
+    ['studio1', 'Studio Gray', 'url(https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=700&q=80)'],
+    ['studio2', 'Studio Warm', 'url(https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=700&q=80)'],
+    ['studio3', 'Studio Minimal', 'url(https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=700&q=80)'],
+    ['studio4', 'Studio Canvas', 'url(https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=700&q=80)'],
+    ['studio5', 'Studio Soft', 'url(https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=700&q=80)'],
+    ['studio6', 'Studio Moody', 'url(https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=700&q=80)'],
+    ['studio7', 'Studio Color', 'url(https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=700&q=80)'],
+    ['studio8', 'Studio Cream', 'url(https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=700&q=80)'],
+    ['studio9', 'Studio Beige', 'url(https://images.unsplash.com/photo-1528459105426-b9548367069b?auto=format&fit=crop&w=700&q=80)'],
+    ['studio10', 'Studio Paper', 'linear-gradient(135deg,#f5efe6,#d8cab9)'],
+    ['studio11', 'Studio Check', 'repeating-conic-gradient(#1f3027 0 25%,#ead6a8 0 50%)'],
+    ['studio12', 'Peach', 'linear-gradient(135deg,#ffd3ba,#f28b74)'],
+    ['studio13', 'Mint', 'linear-gradient(135deg,#d7eddc,#8cbda4)'],
+    ['studio14', 'Lavender', 'linear-gradient(135deg,#d7c9ed,#9279b7)'],
+    ['studio15', 'Midnight', 'linear-gradient(135deg,#10182c,#385e8f)'],
+    ['studio16', 'Coral', 'linear-gradient(135deg,#ff9975,#dd4664)'],
+    ['studio17', 'Dots', 'radial-gradient(#182018 1px,transparent 2px),#f2c23e'],
+    ['studio18', 'Ivory', 'linear-gradient(135deg,#fffff0,#f5f5dc)'],
+    ['studio19', 'Rose', 'linear-gradient(135deg,#e8b4b8,#d4758b)'],
+    ['studio20', 'Latte', 'linear-gradient(135deg,#d2b48c,#a67b5b)']
   ],
-  nature: [
-    ['leaf', 'Daun', 'url(https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=700&q=80)'],
-    ['ocean', 'Laut', 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80)'],
-    ['flower', 'Bunga', 'url(https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80)'],
-    ['cloud', 'Langit', 'url(https://images.unsplash.com/photo-1499346030926-9a72daac6c63?auto=format&fit=crop&w=700&q=80)'],
-    ['sakura', 'Sakura', 'url(https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=700&q=80)']
-  ],
-  party: [
-    ['disco', 'Disco', 'url(https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=700&q=80)'],
-    ['neon', 'Neon', 'url(https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80)'],
-    ['gold', 'Gold', 'linear-gradient(135deg,#2c1c20,#bf8c31)'],
-    ['confetti', 'Konfeti', 'radial-gradient(circle at 20% 30%,#f5d54e 0 4px,transparent 5px),#34433a'],
-    ['fireworks', 'Fireworks', 'radial-gradient(circle at 50% 30%,#ff6b6b 0 4px,transparent 5px),radial-gradient(circle at 30% 60%,#ffd93d 0 3px,transparent 4px),radial-gradient(circle at 70% 50%,#6bcb77 0 3px,transparent 4px),#0d1b2a']
-  ]
+  nature: photoSet('nature', [
+    '1441974231531-c6227db76b6e', '1507525428034-b723cf961d3e', '1464822759023-fed622ff2c3b',
+    '1499002238440-d264edd596ec', '1470252649378-9c29740c9fa8', '1470509037663-253afd7f0f51',
+    '1433086966358-54859d0ed716', '1500534623283-312aade485b7', '1518837695005-2083093ee35b',
+    '1506744038136-46273834b3fb', '1432405972618-c60b0225b8f9', '1459411552884-841db9b3cc2a',
+    '1428592953211-077101b2021b', '1500534314209-a25ddb2bd429', '1473445361088-5c6a9a0f5c5b',
+    '1472396961693-142e6e269027', '1448375240586-882707db888b', '1497250681960-ef046c08a56e',
+    '1491002052546-bf38f186af56', '1501004318641-b39e6451bec6'
+  ]),
+  party: photoSet('party', [
+    '1514525253161-7a46d19cd819', '1519608487953-e999c86e7455', '1492684223066-81342ee5ff30',
+    '1516450360452-9312f5e86fc7', '1530103862676-de8c9debad1d', '1470225620780-dba8ba36b745',
+    '1513151233558-d860c5398176', '1527529482837-4698179dc6ce', '1508997449629-303059a039c0',
+    '1566737236500-c8ac43014a67', '1504196606672-aef5c9cefc92', '1496337589254-7e19d01cec44',
+    '1517457373958-b7bdd4587205', '1485872299825-470a1a0c4974', '1514525253161-7a46d19cd819',
+    '1520854221256-17451cc331bf', '1528459105426-b9548367069b', '1519710164239-da123dc03ef4',
+    '1518709268805-4e9042af2176', '1509198397868-475647b2a1e5'
+  ]),
+  abstract: photoSet('abstract', [
+    '1541701494587-cb58502866ab', '1550684848-fac1c5b4e853', '1579783900882-c0d3dad7b119',
+    '1557683316-973673baf926', '1500530855697-b586d89ba3ee', '1550745165-9bc0b252726f',
+    '1518709268805-4e9042af2176', '1531058020387-3be344556be6', '1553356084-58ef4a67b2a7',
+    '1549490349-8643362247b5', '1508739773434-c26b3d09e071', '1618005182384-a83a8bd57fbe',
+    '1579783902614-a3fb3927b675', '1563089145-599997674d42', '1534447677768-be436bb09401',
+    '1509198397868-475647b2a1e5', '1513542789411-b6a5d4f31634', '1528459105426-b9548367069b',
+    '1507679799987-c73779587ccf', '1558655146-d09347e92766'
+  ]),
+  pastel: photoSet('pastel', [
+    '1490750967868-88aa4486c946', '1494438639946-1ebd1d20bf85', '1501004318641-b39e6451bec6',
+    '1519331379826-f10be5486c6f', '1528459105426-b9548367069b', '1513159446162-54eb8bdaa79b',
+    '1523978591478-c753949ff840', '1497366754035-f200968a6e72', '1499346030926-9a72daac6c63',
+    '1500530855697-b586d89ba3ee', '1518709268805-4e9042af2176', '1557683316-973673baf926',
+    '1549490349-8643362247b5', '1531058020387-3be344556be6', '1550684848-fac1c5b4e853',
+    '1508739773434-c26b3d09e071', '1618005182384-a83a8bd57fbe', '1579783902614-a3fb3927b675',
+    '1513542789411-b6a5d4f31634', '1507679799987-c73779587ccf'
+  ]),
+  urban: photoSet('urban', [
+    '1477959858617-67f85cf4f1df', '1480714378408-67cf0d13bc1b', '1465447142348-e9952c393450',
+    '1444723121867-7a241cacace9', '1486325212027-8081e485255e', '1449824913935-59a10b8d2000',
+    '1519501025264-65ba15a82390', '1513694203232-719a280e022f', '1506751470038-e579ef920950',
+    '1496568816309-51a7cbe28e9d', '1519608487953-e999c86e7455', '1514525253161-7a46d19cd819',
+    '1492684223066-81342ee5ff30', '1516450360452-9312f5e86fc7', '1470225620780-dba8ba36b745',
+    '1513151233558-d860c5398176', '1527529482837-4698179dc6ce', '1508997449629-303059a039c0',
+    '1566737236500-c8ac43014a67', '1504196606672-aef5c9cefc92'
+  ]),
+  season: photoSet('season', [
+    '1522383225653-ed111181a951', '1507525428034-b723cf961d3e', '1476820865390-c52aeefe9589',
+    '1491002052546-bf38f186af56', '1437622368342-7a3d73a34c8f', '1513836279014-a89f7a76ae86',
+    '1483921020237-2ff51e8e4b22', '1500534314209-a25ddb2bd429', '1519681393784-d120267933ba',
+    '1469474968028-56623f02e42e', '1441974231531-c6227db76b6e', '1464822759023-fed622ff2c3b',
+    '1499002238440-d264edd596ec', '1470252649378-9c29740c9fa8', '1470509037663-253afd7f0f51',
+    '1433086966358-54859d0ed716', '1500534623283-312aade485b7', '1518837695005-2083093ee35b',
+    '1506744038136-46273834b3fb', '1432405972618-c60b0225b8f9'
+  ]),
+  luxe: photoSet('luxe', [
+    '1515562141207-7a88fb7ce338', '1529139574466-a303027c1d8b', '1497366811353-6870744d04b2',
+    '1517841905240-472988babdf9', '1542038382126-77ae2819338d', '1519710164239-da123dc03ef4',
+    '1524250502761-1ac6f2e30d43', '1509198397868-475647b2a1e5', '1518709268805-4e9042af2176',
+    '1508739773434-c26b3d09e071', '1534447677768-be436bb09401', '1513542789411-b6a5d4f31634',
+    '1507679799987-c73779587ccf', '1579783902614-a3fb3927b675', '1618005182384-a83a8bd57fbe',
+    '1550684848-fac1c5b4e853', '1558655146-d09347e92766', '1528459105426-b9548367069b',
+    '1541701494587-cb58502866ab', '1557683316-973673baf926'
+  ]),
+  toons: photoSet('toons', [
+    '1579783902614-a3fb3927b675', '1513542789411-b6a5d4f31634', '1563089145-599997674d42',
+    '1534447677768-be436bb09401', '1509198397868-475647b2a1e5', '1550745165-9bc0b252726f',
+    '1518709268805-4e9042af2176', '1508739773434-c26b3d09e071', '1579783900882-c0d3dad7b119',
+    '1618005182384-a83a8bd57fbe', '1541701494587-cb58502866ab', '1550684848-fac1c5b4e853',
+    '1557683316-973673baf926', '1500530855697-b586d89ba3ee', '1531058020387-3be344556be6',
+    '1553356084-58ef4a67b2a7', '1549490349-8643362247b5', '1490750967868-88aa4486c946',
+    '1494438639946-1ebd1d20bf85', '1501004318641-b39e6451bec6'
+  ]),
+  lucu: photoSet('lucu', [
+    '1514888286974-6c03e2ca1dba', '1543466835-00a7907e9de1', '1533738363-b7f9aef128ce',
+    '1561948955-570b270e7c36', '1537151608828-ea2b11777ee8', '1505628346881-b72b27e84530',
+    '1574158622682-e40e69881006', '1583511655857-d19b40a7a54e', '1517849845537-4d257902454a',
+    '1548767797-d8c844163c4c', '1535930891776-0c2dfb7fda1a', '1573865526739-10659fec78a5',
+    '1560807707-8cc77767d783', '1548802673-380ab8ebc7b7', '1574158622682-e40e69881006',
+    '1518020382113-a7e8fc38eac9', '1530281700549-e82e7bf110d6', '1592194996308-7b43878e84a6',
+    '1577023311546-acd076573138', '1526336024174-e58f5cdd8e13'
+  ])
 };
 
 function wait(t) { return new Promise(r => setTimeout(r, t)); }
@@ -255,28 +352,40 @@ async function background(c, w, h) {
   }
 }
 
+let captionPos = 'bottom';
+
 /* ── Stamp (professional) ── */
 function stamp(c, w, h, fr = 0, isPolaroid = false) {
-  let message = $('#captionInput').value.trim();
+  let message = $('#captionInput')?.value.trim() || '';
   c.textAlign = 'center';
   c.textBaseline = 'middle';
 
-  if (isPolaroid) return;
+  // 1. Polaroid Caption
+  if (isPolaroid) {
+    if (message) {
+      c.fillStyle = '#333';
+      c.font = 'italic 600 17px "Cormorant Garamond", serif';
+      c.fillText(message, w / 2, h - 45);
+    }
+    if (sticker) {
+      c.font = '32px sans-serif';
+      c.fillText(sticker, w - fr - 40, h - 45);
+    }
+    return;
+  }
 
   let barTop = h - 65 - fr;
-  let barMid = barTop + 32;
-  let barBot = barTop + 52;
+  let barMid = barTop + 24;
+  let barBot = barTop + 48;
 
+  // 2. DEWA Brand & Copyright at bottom
   c.fillStyle = '#182018';
-  c.font = 'italic 700 36px "Cormorant Garamond", serif';
+  c.font = 'italic 700 32px "Cormorant Garamond", serif';
   c.fillText('DEWA', w / 2, barMid);
 
   c.font = '500 9px "DM Mono", monospace';
-  c.fillStyle = '#555';
-  c.fillText(
-    message || 'PHOTO BOOTH  ·  MOMEN KECIL, CERITA BESAR',
-    w / 2, barBot
-  );
+  c.fillStyle = '#666';
+  c.fillText('PHOTO BOOTH  ·  MOMEN KECIL, CERITA BESAR', w / 2, barBot);
 
   let d = new Date();
   let ds = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
@@ -285,10 +394,39 @@ function stamp(c, w, h, fr = 0, isPolaroid = false) {
   c.fillStyle = '#999';
   c.fillText(ds, w - fr - 14, barBot);
 
-  if (sticker && sticker !== '✦') {
+  // 3. User Custom Photo Message Position (Top, Center, Bottom - NOT under copyright!)
+  if (message) {
+    let msgY = fr + 50;
+    if (captionPos === 'center') msgY = h / 2;
+    else if (captionPos === 'bottom') msgY = barTop - 28;
+
+    c.save();
+    c.font = '600 13px "DM Mono", monospace';
+    let textW = c.measureText(message).width + 36;
+    let textH = 32;
+
+    // Draw translucent background pill
+    c.fillStyle = 'rgba(24, 32, 24, 0.85)';
+    roundRect(c, w / 2 - textW / 2, msgY - textH / 2, textW, textH, 16);
+    c.fill();
+    c.strokeStyle = 'rgba(245, 240, 231, 0.4)';
+    c.lineWidth = 1;
+    c.stroke();
+
+    // Draw message text
+    c.textAlign = 'center';
+    c.fillStyle = '#f5f0e7';
+    c.fillText(message, w / 2, msgY);
+    c.restore();
+  }
+
+  // 4. Emoji / Sticker
+  if (sticker) {
+    c.save();
+    c.font = '36px sans-serif';
     c.textAlign = 'left';
-    c.font = '42px serif';
-    c.fillText(sticker, fr + 10, 55);
+    c.fillText(sticker, fr + 16, fr + 48);
+    c.restore();
   }
 }
 
@@ -381,11 +519,11 @@ async function makePrint() {
   if (!chosen.length) { notice('Pilih minimal satu foto.'); return; }
 
   // Limit per layout
-  if (layout === 'single') chosen = [chosen[0]];
-  else if (layout === 'polaroid') chosen = [chosen[0]];
-  else if (layout === 'duo') chosen = [chosen[0], chosen[1] || chosen[0]];
-  else if (layout === 'grid') chosen = chosen.slice(0, 4);
-  else if (layout === 'collage') chosen = chosen.slice(0, 5);
+  if (layout === 'single' || layout === 'polaroid') chosen = [chosen[0]];
+  else if (layout === 'duo') chosen = chosen.slice(0, 2);
+  else if (layout === 'grid') chosen = chosen.slice(0, 8);
+  else if (layout === 'collage') chosen = chosen.slice(0, 8);
+  else if (layout === 'strip' || layout === 'film') chosen = chosen.slice(0, 8);
 
   let portrait = format === 'portrait';
   let w, h, pad = 40, gap = 10, radius = 8;
@@ -520,13 +658,15 @@ async function makePrint() {
       break;
     }
     case 'grid': {
-      let cols = 2, rows = 2;
+      let total = chosen.length;
+      let cols = total > 4 ? 3 : 2;
+      let rows = Math.ceil(total / cols);
       let gridW = w - fr * 2 - 40;
       let gridH = h - fr * 2 - 130;
-      let cellW = (gridW - gap) / cols;
-      let cellH = (gridH - gap) / rows;
+      let cellW = (gridW - gap * (cols - 1)) / cols;
+      let cellH = (gridH - gap * (rows - 1)) / rows;
       let ox = fr + 20, oy = fr + 20;
-      chosen.slice(0, 4).forEach((p, i) => {
+      chosen.slice(0, 8).forEach((p, i) => {
         let col = i % cols, row = Math.floor(i / cols);
         let x = ox + col * (cellW + gap);
         let y = oy + row * (cellH + gap);
@@ -624,14 +764,17 @@ async function makePrint() {
     }
     case 'collage': {
       let positions = [
-        { x: 50, y: 30, w: 320, h: 400, rot: -4 },
-        { x: 360, y: 50, w: 320, h: 400, rot: 3 },
-        { x: 170, y: 320, w: 320, h: 400, rot: -1.5 },
-        { x: 480, y: 340, w: 240, h: 300, rot: 5 },
-        { x: 30, y: 380, w: 230, h: 290, rot: -6 }
+        { x: 40, y: 20, w: 280, h: 350, rot: -4 },
+        { x: 380, y: 30, w: 280, h: 350, rot: 3 },
+        { x: 160, y: 220, w: 280, h: 350, rot: -1.5 },
+        { x: 460, y: 240, w: 240, h: 290, rot: 5 },
+        { x: 30, y: 400, w: 240, h: 290, rot: -6 },
+        { x: 320, y: 420, w: 240, h: 290, rot: 4 },
+        { x: 150, y: 480, w: 230, h: 280, rot: -3 },
+        { x: 480, y: 490, w: 230, h: 280, rot: 2 }
       ];
       let offX = (w - 800) / 2;
-      chosen.slice(0, 5).forEach((p, i) => {
+      chosen.slice(0, 8).forEach((p, i) => {
         let pos = positions[i] || positions[0];
         let px = pos.x + offX;
         let py = pos.y + fr + 10;
@@ -707,6 +850,66 @@ function renderCovers(cat = 'studio') {
 
 /* ── Event bindings ── */
 const overlayCapture = $('#overlayCapture');
+const captionInput = $('#captionInput');
+const cameraCaptionOverlay = $('#cameraCaptionOverlay');
+
+if (captionInput && cameraCaptionOverlay) {
+  cameraCaptionOverlay.className = `camera-caption-overlay pos-${captionPos}`;
+  captionInput.addEventListener('input', () => {
+    const val = captionInput.value.trim();
+    if (val) {
+      cameraCaptionOverlay.textContent = val;
+      cameraCaptionOverlay.classList.add('show');
+    } else {
+      cameraCaptionOverlay.textContent = '';
+      cameraCaptionOverlay.classList.remove('show');
+    }
+  });
+}
+
+const captionPositions = $('#captionPositions');
+if (captionPositions && cameraCaptionOverlay) {
+  captionPositions.onclick = e => {
+    let b = e.target.closest('button');
+    if (!b) return;
+    captionPos = b.dataset.pos;
+    $$('#captionPositions .pos-btn').forEach(x => x.classList.toggle('active', x === b));
+    const val = captionInput ? captionInput.value.trim() : '';
+    cameraCaptionOverlay.className = `camera-caption-overlay pos-${captionPos} ${val ? 'show' : ''}`;
+  };
+}
+
+const syncEmojiUI = (chosenEmoji) => {
+  sticker = chosenEmoji;
+  $$('#emojiPicker .emoji-opt').forEach(x => x.classList.toggle('active', x.dataset.emoji === sticker));
+  $$('#modalEmojis .m-emoji').forEach(x => x.classList.toggle('active', x.dataset.emoji === sticker));
+};
+
+const emojiPicker = $('#emojiPicker');
+if (emojiPicker) {
+  emojiPicker.onclick = e => {
+    let b = e.target.closest('button');
+    if (!b) return;
+    syncEmojiUI(b.dataset.emoji || '');
+  };
+}
+
+const modalEmojis = $('#modalEmojis');
+if (modalEmojis) {
+  modalEmojis.onclick = e => {
+    let b = e.target.closest('button');
+    if (!b) return;
+    syncEmojiUI(b.dataset.emoji || '');
+  };
+}
+
+const customEmojiInput = $('#customEmojiInput');
+if (customEmojiInput) {
+  customEmojiInput.oninput = () => {
+    let val = customEmojiInput.value.trim();
+    syncEmojiUI(val);
+  };
+}
 
 $('#filters').onclick = e => {
   let b = choose('filter', v => filter = v, '.filter', e);
@@ -753,8 +956,29 @@ overlayCapture.onclick = () => captureButton.click();
 $('#makePrintButton').onclick = makePrint;
 $('#reviewClose').onclick = closeReview;
 
-$('#fullscreenButton').onclick = () => stage.requestFullscreen?.();
-$('#fsOverlayButton').onclick = () => stage.requestFullscreen?.();
+function toggleFullscreen() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } else {
+    if (stage.requestFullscreen) stage.requestFullscreen();
+    else if (stage.webkitRequestFullscreen) stage.webkitRequestFullscreen();
+  }
+}
+
+function syncFullscreenUI() {
+  const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const mainBtn = $('#fullscreenButton');
+  const overlayBtn = $('#fsOverlayButton');
+  if (mainBtn) mainBtn.innerHTML = isFS ? 'EXIT FULLSCREEN ↙' : 'FULLSCREEN ↗';
+  if (overlayBtn) overlayBtn.innerHTML = isFS ? '⤢ KELUAR' : '⤢ FULLSCREEN';
+}
+
+document.addEventListener('fullscreenchange', syncFullscreenUI);
+document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
+
+$('#fullscreenButton').onclick = toggleFullscreen;
+$('#fsOverlayButton').onclick = toggleFullscreen;
 
 $('#qrButton').onclick = () => {
   $('#qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(location.href)}`;

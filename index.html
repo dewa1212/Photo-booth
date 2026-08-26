@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ec4d35'/><text x='50' y='68' font-size='60' font-weight='bold' font-family='serif' fill='%23f5f0e7' text-anchor='middle'>D</text></svg>" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ec4d35'/><text x='50' y='68' font-size='60' font-weight='bold' font-family='serif' fill='%23f5f0e7' text-anchor='middle'>D</text></svg>" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -18,7 +20,10 @@
           <span>DEWA<br /><small>PHOTO BOOTH</small></span>
         </a>
         <p class="header-note"><span></span> MOMEN KECIL, CERITA BESAR</p>
-        <button class="sound-button" id="soundButton" type="button" aria-expanded="false" title="Putar musik Teh Hijau dari YouTube">MUSIC <b>OFF</b></button>
+        <button class="sound-button" id="soundButton" type="button" aria-expanded="false" title="Putar musik latar belakang">
+          <span class="eq-bars"><i class="eq1"></i><i class="eq2"></i><i class="eq3"></i></span>
+          <span>MUSIC <b>OFF</b></span>
+        </button>
       </header>
 
       <section class="hero" id="top">
@@ -46,6 +51,7 @@
             <video id="video" autoplay playsinline muted></video>
             <canvas id="canvas" hidden></canvas>
             <div class="camera-placeholder" id="cameraPlaceholder"><span class="camera-icon">◉</span><strong>Ruang ini milikmu.</strong><small>Tarik napas, pilih mood, lalu buat momennya.</small></div>
+            <div class="camera-caption-overlay" id="cameraCaptionOverlay"></div>
             <div class="countdown" id="countdown" aria-live="assertive"></div>
             <div class="flash" id="flash"></div>
             <div class="live-toolbar" id="liveToolbar">
@@ -56,7 +62,7 @@
           </div>
           <button class="quick-capture" id="quickCaptureButton" type="button" disabled><b>◉</b> MULAI FOTO</button>
           <aside class="controls">
-            <div class="control-block"><span class="control-label">PILIH TONE</span>
+            <div class="control-block"><span class="control-label">PILIH TONE (15 TONE)</span>
               <div class="filters" id="filters">
                 <button class="filter active" data-filter="none" type="button"><i class="swatch original"></i>Asli</button>
                 <button class="filter" data-filter="warm" type="button"><i class="swatch warm"></i>Hangat</button>
@@ -65,6 +71,14 @@
                 <button class="filter" data-filter="noir" type="button"><i class="swatch noir"></i>Noir</button>
                 <button class="filter" data-filter="pop" type="button"><i class="swatch pop"></i>Pop</button>
                 <button class="filter" data-filter="faded" type="button"><i class="swatch faded"></i>Faded</button>
+                <button class="filter" data-filter="vintage" type="button"><i class="swatch vintage"></i>Retro</button>
+                <button class="filter" data-filter="cyber" type="button"><i class="swatch cyber"></i>Cyber</button>
+                <button class="filter" data-filter="sepia" type="button"><i class="swatch sepia"></i>Sepia</button>
+                <button class="filter" data-filter="cool" type="button"><i class="swatch cool"></i>Sejuk</button>
+                <button class="filter" data-filter="sunset" type="button"><i class="swatch sunset"></i>Senja</button>
+                <button class="filter" data-filter="emerald" type="button"><i class="swatch emerald"></i>Zamrud</button>
+                <button class="filter" data-filter="soft" type="button"><i class="swatch soft"></i>Lembut</button>
+                <button class="filter" data-filter="dramatic" type="button"><i class="swatch dramatic"></i>Drama</button>
               </div>
             </div>
             <div class="control-block"><span class="control-label">PILIH FORMAT</span>
@@ -79,6 +93,10 @@
                 <button class="shot" data-shots="2" type="button">2 FOTO</button>
                 <button class="shot" data-shots="3" type="button">3 FOTO</button>
                 <button class="shot" data-shots="4" type="button">4 FOTO</button>
+                <button class="shot" data-shots="5" type="button">5 FOTO</button>
+                <button class="shot" data-shots="6" type="button">6 FOTO</button>
+                <button class="shot" data-shots="7" type="button">7 FOTO</button>
+                <button class="shot" data-shots="8" type="button">8 FOTO</button>
               </div>
               <small class="help-text" id="helpTimer">Setiap foto diambil setelah hitung mundur 3 detik.</small>
             </div>
@@ -90,7 +108,30 @@
               </div>
             </div>
             <div class="control-block"><span class="control-label">PESAN DI FOTO</span>
-              <input class="caption-input" id="captionInput" maxlength="32" placeholder="Contoh: Dita & Raka · 2027" />
+              <input class="caption-input" id="captionInput" maxlength="36" placeholder="Contoh: Dita & Raka · 2027" />
+              <div class="caption-positions" id="captionPositions">
+                <button class="pos-btn" data-pos="top" type="button">ATAS</button>
+                <button class="pos-btn" data-pos="center" type="button">TENGAH</button>
+                <button class="pos-btn active" data-pos="bottom" type="button">BAWAH</button>
+              </div>
+            </div>
+            <div class="control-block"><span class="control-label">EMOJI / STIKER FOTO</span>
+              <div class="emoji-picker" id="emojiPicker">
+                <button class="emoji-opt active" data-emoji="" type="button">Tanpa Emoji</button>
+                <button class="emoji-opt" data-emoji="❤️" type="button">❤️</button>
+                <button class="emoji-opt" data-emoji="✨" type="button">✨</button>
+                <button class="emoji-opt" data-emoji="🌸" type="button">🌸</button>
+                <button class="emoji-opt" data-emoji="👑" type="button">👑</button>
+                <button class="emoji-opt" data-emoji="🕶️" type="button">🕶️</button>
+                <button class="emoji-opt" data-emoji="🎀" type="button">🎀</button>
+                <button class="emoji-opt" data-emoji="😸" type="button">😸</button>
+                <button class="emoji-opt" data-emoji="🔥" type="button">🔥</button>
+                <button class="emoji-opt" data-emoji="📸" type="button">📸</button>
+                <button class="emoji-opt" data-emoji="💖" type="button">💖</button>
+                <button class="emoji-opt" data-emoji="⭐" type="button">⭐</button>
+                <button class="emoji-opt" data-emoji="🥳" type="button">🥳</button>
+              </div>
+              <input class="custom-emoji-input" id="customEmojiInput" maxlength="4" placeholder="Ketik emoji sendiri..." />
               <div id="stickers" hidden><button data-sticker="" type="button"></button></div>
               <input id="stickerEditor" type="hidden" value="" />
             </div>
@@ -105,6 +146,7 @@
                 <button class="cover-tab" data-category="season" type="button">SEASON</button>
                 <button class="cover-tab" data-category="luxe" type="button">LUXE</button>
                 <button class="cover-tab" data-category="toons" type="button">TOONS</button>
+                <button class="cover-tab" data-category="lucu" type="button">LUCU</button>
               </div>
               <div class="covers" id="covers"></div>
             </div>
@@ -139,15 +181,24 @@
       <footer><p>MADE FOR THE MOMENT <span>✦</span> DEWA PHOTO BOOTH</p><p>© 2026–2027 — KEEP WHAT MATTERS</p></footer>
     </main>
 
-    <!-- Music Player (YouTube) -->
+    <!-- Music Player (HTML5 Audio + Web Audio Synth Engine) -->
     <aside class="music-player" id="musicPlayer" aria-hidden="true">
       <button class="modal-close" id="musicClose" type="button" aria-label="Tutup pemutar">×</button>
       <p class="eyebrow">MUSIC FOR THE MOMENT</p>
-      <p class="music-title">Teh Hijau <span>— Tulus</span></p>
-      <div class="yt-wrap"><iframe id="ytPlayer" src="https://www.youtube-nocookie.com/embed/RO75uUZiAw0?enablejsapi=1&loop=1&playlist=RO75uUZiAw0&rel=0" allow="autoplay; encrypted-media" title="Teh Hijau - Tulus"></iframe></div>
-      <p class="yt-note"> Musik berjalan di latar belakang.</p>
+      <p class="music-title">Aesthetic Lounge <span>— Chill Lo-Fi</span></p>
+      <div class="audio-card">
+        <div class="audio-disk" id="audioDisk">✦</div>
+        <div class="audio-info">
+          <strong>DEWA Sound Atmosphere</strong>
+          <small id="audioStatusText">Klik tombol untuk memutar musik</small>
+        </div>
+        <button class="audio-toggle-btn" id="audioToggleBtn" type="button">▶ PLAY</button>
+      </div>
+      <p class="yt-note"> Musik instrumen santai menemani sesi fotomu.</p>
+      <audio id="bgAudio" loop preload="auto" crossorigin="anonymous">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+      </audio>
     </aside>
-    <script src="https://www.youtube.com/iframe_api"></script>
 
     <!-- Review Modal -->
     <section class="review-modal" id="reviewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
@@ -157,6 +208,21 @@
         <h2 id="reviewTitle">Yang mana yang ikut pulang?</h2>
         <p class="review-copy">Pilih foto untuk hasil akhir. Kamu juga bisa mengulang satu foto sebelum lanjut.</p>
         <div class="review-grid" id="reviewGrid"></div>
+        <div class="review-emoji-bar">
+          <span class="review-emoji-label">TAMBAH EMOJI HASIL:</span>
+          <div class="modal-emojis" id="modalEmojis">
+            <button class="m-emoji active" data-emoji="" type="button">Tanpa Emoji</button>
+            <button class="m-emoji" data-emoji="❤️" type="button">❤️</button>
+            <button class="m-emoji" data-emoji="✨" type="button">✨</button>
+            <button class="m-emoji" data-emoji="🌸" type="button">🌸</button>
+            <button class="m-emoji" data-emoji="👑" type="button">👑</button>
+            <button class="m-emoji" data-emoji="🕶️" type="button">🕶️</button>
+            <button class="m-emoji" data-emoji="🎀" type="button">🎀</button>
+            <button class="m-emoji" data-emoji="😸" type="button">😸</button>
+            <button class="m-emoji" data-emoji="🔥" type="button">🔥</button>
+            <button class="m-emoji" data-emoji="🥳" type="button">🥳</button>
+          </div>
+        </div>
         <div class="review-actions">
           <button class="secondary-action" id="qrButton" type="button">▦ QR BOOTH</button>
           <button class="primary-action" id="makePrintButton" type="button">BUAT HASIL FOTO →</button>
@@ -179,244 +245,123 @@
 
     <script src="script.js"></script>
     <script>
-      // ── Extra covers (20+ per category) ──
-      sticker = '';
-      covers.studio.push(
-        ['peach','Peach','linear-gradient(135deg,#ffd3ba,#f28b74)'],
-        ['mint','Mint','linear-gradient(135deg,#d7eddc,#8cbda4)'],
-        ['lavender','Lavender','linear-gradient(135deg,#d7c9ed,#9279b7)'],
-        ['midnight','Midnight','linear-gradient(135deg,#10182c,#385e8f)'],
-        ['coral','Coral','linear-gradient(135deg,#ff9975,#dd4664)'],
-        ['dots','Dots','radial-gradient(#182018 1px,transparent 2px),#f2c23e'],
-        ['cream','Cream','linear-gradient(135deg,#fff8f0,#f0e6d3)'],
-        ['slate','Slate','linear-gradient(135deg,#3a3f47,#6b7d8e)'],
-        ['sand','Sand','linear-gradient(135deg,#e8dcc8,#c4a882)'],
-        ['blush','Blush','linear-gradient(135deg,#f7cac9,#f5989e)'],
-        ['charcoal','Charcoal','linear-gradient(135deg,#2c2c2c,#4a4a4a)'],
-        ['ivory','Ivory','linear-gradient(135deg,#fffff0,#f5f5dc)'],
-        ['rose','Rose','linear-gradient(135deg,#e8b4b8,#d4758b)'],
-        ['stone','Stone','linear-gradient(135deg,#d1ccc0,#a9a5a0)'],
-        ['fog','Fog','linear-gradient(135deg,#d6d6d6,#b8b8b8)'],
-        ['mist','Mist','linear-gradient(135deg,#e8e8e8,#c8d6e5)'],
-        ['pearl','Pearl','linear-gradient(135deg,#f5f0eb,#e0d5cc)'],
-        ['snow','Snow','linear-gradient(135deg,#f8f8ff,#e8e8f0)'],
-        ['taupe','Taupe','linear-gradient(135deg,#b5a89a,#8c7b6b)'],
-        ['ash','Ash','linear-gradient(135deg,#6e6e6e,#9e9e9e)'],
-        ['latte','Latte','linear-gradient(135deg,#d2b48c,#a67b5b)'],
-        ['oat','Oat','linear-gradient(135deg,#f5e6d0,#dfd0b8)']
-      );
-      covers.nature.push(
-        ['forest','Forest','url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=700&q=80)'],
-        ['lavenderfield','Lavender','url(https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=700&q=80)'],
-        ['sand2','Sand dune','url(https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=80)'],
-        ['waterfall','Waterfall','url(https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=700&q=80)'],
-        ['sunflower','Sunflower','url(https://images.unsplash.com/photo-1470509037663-253afd7f0f51?auto=format&fit=crop&w=700&q=80)'],
-        ['mountain','Mountain','url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=700&q=80)'],
-        ['river','River','url(https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=700&q=80)'],
-        ['autumn','Autumn','url(https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80)'],
-        ['snow2','Snowy','url(https://images.unsplash.com/photo-1491002052546-bf38f186af56?auto=format&fit=crop&w=700&q=80)'],
-        ['beach','Beach','url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80)'],
-        ['palm','Palm','url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=700&q=80)'],
-        ['cactus','Cactus','url(https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?auto=format&fit=crop&w=700&q=80)'],
-        ['rain','Rain','url(https://images.unsplash.com/photo-1428592953211-077101b2021b?auto=format&fit=crop&w=700&q=80)'],
-        ['starry','Starry night','linear-gradient(180deg,#0b0e2e,#1a237e,#283593)'],
-        ['autumn2','Fall','linear-gradient(135deg,#b85c38,#e0a458,#c97b2a)'],
-        ['spring','Spring','linear-gradient(135deg,#c8e6c9,#81c784,#4caf50)'],
-        ['winter','Winter','linear-gradient(135deg,#e3f2fd,#90caf9,#42a5f5)'],
-        ['tropical','Tropical','linear-gradient(135deg,#00c853,#00bfa5,#1de9b6)'],
-        ['volcano','Volcano','linear-gradient(135deg,#3e2723,#8d6e63,#d84315)'],
-        ['dawn','Dawn','linear-gradient(135deg,#ff9a9e,#fecfef,#fdfcfb)'],
-        ['dusk','Dusk','linear-gradient(135deg,#0f0c29,#302b63,#24243e)'],
-        ['moss2','Moss','linear-gradient(135deg,#2d5016,#5a7a2e,#8bc34a)']
-      );
-      covers.party.push(
-        ['purple','Purple glow','linear-gradient(135deg,#20133d,#8d4bc8,#ff8fb3)'],
-        ['silver','Silver flash','linear-gradient(135deg,#2d3033,#e4e6e6,#60656a)'],
-        ['lime','Lime pop','linear-gradient(135deg,#153a30,#b6ed55)'],
-        ['pink2','Pink light','linear-gradient(135deg,#3e163e,#f663a7,#ffd1e5)'],
-        ['blue2','Blue night','linear-gradient(135deg,#09224f,#2875c9,#72d6e9)'],
-        ['fire','Fire','linear-gradient(135deg,#1a0000,#ff3d00,#ff9100)'],
-        ['ice','Ice','linear-gradient(135deg,#e0f7fa,#80deea,#00acc1)'],
-        ['cosmic','Cosmic','radial-gradient(ellipse at 30% 20%,#4a148c,#1a0033,#000)'],
-        ['neon2','Neon2','linear-gradient(135deg,#0d0221,#0f084b,#26408b)'],
-        ['glow','Glow','radial-gradient(circle at 50% 50%,#ff6f00,#ff8f00,#ffab00,#333)'],
-        ['sparkle','Sparkle','radial-gradient(circle at 30% 40%,#fff 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,#fff 0 2px,transparent 3px),#1a1a2e'],
-        ['dance','Dance','linear-gradient(135deg,#e91e63,#9c27b0,#673ab7)'],
-        ['disco2','Disco2','conic-gradient(from 0deg,#ff0000,#ff8800,#ffff00,#00ff00,#0088ff,#8800ff,#ff0000)'],
-        ['rave','Rave','linear-gradient(135deg,#00e5ff,#651fff,#d500f9)'],
-        ['party2','Party','linear-gradient(135deg,#ffd54f,#ff7043,#e91e63)'],
-        ['chill','Chill','linear-gradient(135deg,#1a237e,#283593,#3949ab)'],
-        ['vibe','Vibe','linear-gradient(135deg,#ff6f00,#f44336,#9c27b0)'],
-        ['laser','Laser','radial-gradient(ellipse at 20% 80%,#00e676,transparent 40%),radial-gradient(ellipse at 80% 20%,#d500f9,transparent 40%),#0a0a0a'],
-        ['strobe','Strobe','radial-gradient(circle at 25% 25%,#fff 0 4px,transparent 5px),radial-gradient(circle at 75% 75%,#fff 0 4px,transparent 5px),#111'],
-        ['party3','Party3','linear-gradient(135deg,#f50057,#651fff,#00e5ff)'],
-        ['flash','Flash','radial-gradient(circle at 50% 50%,#fff,#ffeb3b 20%,#ff9800 40%,#333 70%)'],
-        ['strobe2','Strobe 2','linear-gradient(135deg,#d500f9,#ff1744,#ffea00)']
-      );
-      covers.toons = [
-        ['candy','Candy','linear-gradient(135deg,#ff9a9e,#fad0c4)'],
-        ['bubblegum','Bubblegum','linear-gradient(135deg,#a18cd1,#fbc2eb)'],
-        ['sky','Langit Cartun','linear-gradient(180deg,#87ceeb,#e0f7fa,#fff)'],
-        ['sunsetcute','Senja Manis','linear-gradient(135deg,#fa709a,#fee140)'],
-        ['lollipop','Lollipop','linear-gradient(135deg,#f093fb,#f5576c)'],
-        ['icecream','Ice Cream','linear-gradient(135deg,#d4fc79,#96e6a1)'],
-        ['kawaii','Kawaii','linear-gradient(135deg,#ffecd2,#fcb69f)'],
-        ['rainbow','Pelangi','linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#84fab0)'],
-        ['star','Bintang','linear-gradient(135deg,#f6d365,#fda085)'],
-        ['heart','Hati','linear-gradient(135deg,#ff9a9e,#fecfef)'],
-        ['flower','Bunga','linear-gradient(135deg,#a1c4fd,#c2e9fb)'],
-        ['moon','Bulan','linear-gradient(135deg,#0c3483,#a2b6df)'],
-        ['sun','Matahari','linear-gradient(135deg,#fddb92,#d1fdff)'],
-        ['ocean2','Laut Lucu','linear-gradient(135deg,#667eea,#764ba2)'],
-        ['forest3','Hutan','linear-gradient(135deg,#d4fc79,#96e6a1,#43e97b)'],
-        ['candy2','Permen','repeating-linear-gradient(45deg,#ff6b6b 0 10px,#fff 10px 20px)'],
-        ['macaron','Macaron','linear-gradient(135deg,#ffecd2,#fcb69f,#a1c4fd)'],
-        ['jelly','Jelly','linear-gradient(135deg,#667eea,#764ba2,#f093fb)'],
-        ['confetti2','Konfeti','radial-gradient(circle at 20% 30%,#ff6b6b 0 3px,transparent 4px),radial-gradient(circle at 80% 70%,#4ecdc4 0 3px,transparent 4px),radial-gradient(circle at 50% 50%,#ffe66d 0 3px,transparent 4px),#2c3e50'],
-        ['dreamy','Dreamy','linear-gradient(135deg,#a1c4fd,#c2e9fb,#ffecd2)'],
-        ['candy3','Candy Stripe','repeating-linear-gradient(90deg,#ff9a9e 0 8px,#fecfef 8px 16px)'],
-        ['polka','Polka Dot','radial-gradient(#f8bbd0 4px,transparent 5px),#fce4ec'],
-        ['bubble','Bubble','radial-gradient(circle at 30% 40%,rgba(255,255,255,.6) 0 15px,transparent 16px),radial-gradient(circle at 70% 60%,rgba(255,255,255,.4) 0 20px,transparent 21px),linear-gradient(135deg,#81d4fa,#4fc3f7)'],
-        ['gummy','Gummy Bear','linear-gradient(135deg,#e91e63,#9c27b0,#673ab7,#3f51b5)'],
-        ['sundae','Sundae','linear-gradient(180deg,#fce4ec,#f8bbd0,#f48fb1,#ec407a)'],
-        ['lollipop2','Rainbow Swirl','conic-gradient(from 0deg,#ff6b6b,#feca57,#48dbfb,#ff9ff3,#ff6b6b)'],
-        ['cotton','Cotton Candy','linear-gradient(135deg,#f3e7e9,#e3eeff,#fce4ec)'],
-        ['juice','Juice','linear-gradient(135deg,#ff5252,#ff1744,#d500f9)'],
-        ['sugar','Sugar Rush','linear-gradient(135deg,#ff6f00,#f44336,#e91e63,#9c27b0)'],
-        ['cupcake','Cupcake','linear-gradient(135deg,#fce4ec,#f8bbd0,#f48fb1)'],
-        ['rainbow2','Rainbow2','linear-gradient(90deg,#ff0000,#ff8800,#ffff00,#00ff00,#0088ff,#8800ff)']
-      );
-      const photoSet = (prefix, ids) => ids.map((id, i) => [
-        `${prefix}${i+1}`, `${prefix} ${i+1}`,
-        `url(https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=700&q=80)`
-      ]);
-      covers.abstract = photoSet('abstract', ['1519608487953-e999c86e7455','1557683316-973673baf926','1549490349-8643362247b5','1531058020387-3be344556be6','1550859492-d5da9d8e45f3','1518709268805-4e9042af2176','1500534623283-312aade485b7','1541701494587-cb58502866ab','1553356084-58ef4a67b2a7','1550745165-9bc0b252726f']);
-      covers.pastel = photoSet('pastel', ['1490750967868-88aa4486c946','1494438639946-1ebd1d20bf85','1497366754035-f200968a6e72','1501004318641-b39e6451bec6','1519331379826-f10be5486c6f','1528459105426-b9548367069b','1500530855697-b586d89ba3ee','1513159446162-54eb8bdaa79b','1492684223066-81342ee5ff30','1523978591478-c753949ff840']);
-      covers.urban = photoSet('urban', ['1477959858617-67f85cf4f1df','1480714378408-67cf0d13bc1b','1465447142348-e9952c393450','1444723121867-7a241cacace9','1486325212027-8081e485255e','1519608487953-e999c86e7455','1449824913935-59a10b8d2000','1477959858617-67f85cf4f1df','1500530855697-b586d89ba3ee','1500534314209-a25ddb2bd429']);
-      covers.season = photoSet('season', ['1470770841072-f978cf4d019e','1464822759023-fed622ff2c3b','1497250681960-ef046c08a56e','1491002052546-bf38f186af56','1441974231531-c6227db76b6e','1500534314209-a25ddb2bd429','1473445361088-5c6a9a0f5c5b','1470252649378-9c29740c9fa8','1472396961693-142e6e269027','1448375240586-882707db888b']);
-      covers.luxe = photoSet('luxe', ['1515562141207-7a88fb7ce338','1529139574466-a303027c1d8b','1497366811353-6870744d04b2','1517841905240-472988babdf9','1529139574466-a303027c1d8b','1542038382126-77ae2819338d','1519710164239-da123dc03ef4','1531058020387-3be344556be6','1500534314209-a25ddb2bd429','1524250502761-1ac6f2e30d43']);
-      covers.abstract.push(
-        ['abswirl','Swirl','linear-gradient(135deg,#667eea,#764ba2)'],
-        ['absneon','Neon Flow','linear-gradient(135deg,#00f260,#0575e6)'],
-        ['absfire','Fire','linear-gradient(135deg,#f12711,#f5af19)'],
-        ['absaurora','Aurora','linear-gradient(135deg,#00c6fb,#005bea)'],
-        ['absgalaxy','Galaxy','radial-gradient(ellipse at 30% 20%,#4a148c,#1a0033,#000)'],
-        ['absmelt','Melt','linear-gradient(135deg,#a8caba,#5d4157)'],
-        ['absrust','Rust','linear-gradient(135deg,#b5503b,#6b3a2a)'],
-        ['absink','Ink','linear-gradient(135deg,#2c3e50,#3498db)'],
-        ['absheat','Heat','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-        ['absglow','Glow','radial-gradient(circle at 50% 50%,#fff176,#f57f17,#e65100,#1a1a1a)'],
-        ['absteal','Teal','linear-gradient(135deg,#00b4db,#0083b0)'],
-        ['abssunset','Sunset','linear-gradient(135deg,#fa709a,#fee140)']
-      );
-      covers.pastel.push(
-        ['pastblush','Blush','linear-gradient(135deg,#f7cac9,#f5989e)'],
-        ['pastsky','Sky','linear-gradient(135deg,#a1c4fd,#c2e9fb)'],
-        ['pastmint','Mint','linear-gradient(135deg,#d7eddc,#8cbda4)'],
-        ['pastlilac','Lilac','linear-gradient(135deg,#d7c9ed,#9279b7)'],
-        ['pastpeach','Peach','linear-gradient(135deg,#ffd3ba,#f28b74)'],
-        ['pastbutter','Butter','linear-gradient(135deg,#fff8dc,#f5deb3)'],
-        ['pastrose','Rose','linear-gradient(135deg,#e8b4b8,#d4758b)'],
-        ['pastlagoon','Lagoon','linear-gradient(135deg,#43cea2,#185a9d)'],
-        ['pastcoral','Coral','linear-gradient(135deg,#ff9975,#dd4664)'],
-        ['pastlavender2','Lavender2','linear-gradient(135deg,#e8d5f5,#c9a9e2)'],
-        ['pastcream','Cream','linear-gradient(135deg,#fff8f0,#f0e6d3)'],
-        ['pastpink2','Pink Mist','linear-gradient(135deg,#fce4ec,#f8bbd0)']
-      );
-      covers.urban.push(
-        ['urbneon','Neon City','linear-gradient(135deg,#0d0221,#26408b)'],
-        ['urbconcrete','Concrete','linear-gradient(135deg,#636363,#a0a0a0)'],
-        ['urbsteel','Steel','linear-gradient(135deg,#3a3f47,#6b7d8e)'],
-        ['urbmidnight','Midnight','linear-gradient(135deg,#10182c,#385e8f)'],
-        ['urbchrome','Chrome','linear-gradient(135deg,#c0c0c0,#808080)'],
-        ['urbsmog','Smog','linear-gradient(135deg,#536976,#292e49)'],
-        ['urbamber','Amber','linear-gradient(135deg,#f7971e,#ffd200)'],
-        ['urbslate','Asphalt','linear-gradient(135deg,#2c3e50,#34495e)'],
-        ['urbnight','Night Light','linear-gradient(135deg,#0f0c29,#302b63,#24243e)'],
-        ['urbglow2','Neon Glow','linear-gradient(135deg,#ff00cc,#333399)'],
-        ['urbdusk','Dusk City','linear-gradient(135deg,#2c3e50,#fd746c)'],
-        ['urbbrick','Brick','linear-gradient(135deg,#8e3b46,#c75b39)']
-      );
-      covers.season.push(
-        ['seaspring','Spring Green','linear-gradient(135deg,#c8e6c9,#81c784)'],
-        ['seassummer','Summer Gold','linear-gradient(135deg,#f7971e,#ffd200)'],
-        ['seasfall','Autumn Red','linear-gradient(135deg,#b5503b,#c0392b)'],
-        ['seaswinter','Winter Blue','linear-gradient(135deg,#e3f2fd,#90caf9)'],
-        ['seascherry','Cherry Blossom','linear-gradient(135deg,#f8bbd0,#f48fb1)'],
-        ['seasmaple','Maple','linear-gradient(135deg,#d84315,#ff8a65)'],
-        ['seassnow','Fresh Snow','linear-gradient(135deg,#f8f8ff,#e8e8f0)'],
-        ['seasleaf','Falling Leaf','linear-gradient(135deg,#bf8c31,#8d6e63)'],
-        ['seasfrost','Frost','linear-gradient(135deg,#b3e5fc,#81d4fa)'],
-        ['seasrain','Monsoon','linear-gradient(135deg,#546e7a,#78909c)'],
-        ['seasbloom','Bloom','linear-gradient(135deg,#f48fb1,#ce93d8)'],
-        ['seasharvest','Harvest','linear-gradient(135deg,#e65100,#f9a825)']
-      );
-      covers.luxe.push(
-        ['luxgold','Gold','linear-gradient(135deg,#bf8c31,#d4af37)'],
-        ['luxdiamond','Diamond','linear-gradient(135deg,#e0e0e0,#f5f5f5,#c0c0c0)'],
-        ['luxonyx','Onyx','linear-gradient(135deg,#1a1a1a,#333)'],
-        ['luxchampagne','Champagne','linear-gradient(135deg,#f7e7ce,#d4a76a)'],
-        ['luxemerald','Emerald','linear-gradient(135deg,#00695c,#2e7d32)'],
-        ['luxsapphire','Sapphire','linear-gradient(135deg,#0d47a1,#1565c0)'],
-        ['luxruby','Ruby','linear-gradient(135deg,#880e4f,#c62828)'],
-        ['luxivory','Ivory','linear-gradient(135deg,#fffff0,#f5f5dc)'],
-        ['luxnoir','Noir','linear-gradient(135deg,#0d0d0d,#212121)'],
-        ['luxsilk','Silk','linear-gradient(135deg,#f5e6d3,#e8d5c4)'],
-        ['luxpearl2','Pearl','linear-gradient(135deg,#f5f0eb,#e0d5cc)'],
-        ['luxvelvet','Velvet','linear-gradient(135deg,#4a148c,#6a1b9a)']
-      );
-      renderCovers();
-
-      // ── Music (YouTube IFrame API) ──
+      // ── Audio Engine (HTML5 Audio + Web Audio Synth Engine) ──
       const musicButton = document.querySelector('#soundButton');
       const musicPlayer = document.querySelector('#musicPlayer');
-      let ytAPIReady = false;
-      let ytPlayer = null;
+      const bgAudio = document.querySelector('#bgAudio');
+      const audioToggleBtn = document.querySelector('#audioToggleBtn');
+      const audioDisk = document.querySelector('#audioDisk');
+      const audioStatusText = document.querySelector('#audioStatusText');
+      let isPlaying = false;
+      let synthTimer = null;
+      let synthCtx = null;
 
-      // YouTube IFrame API callback
-      window.onYouTubeIframeAPIReady = function () {
-        ytPlayer = new YT.Player('ytPlayer', {
-          events: {
-            'onReady': function () { ytAPIReady = true; },
-            'onError': function () { notice('Musik gagal dimuat. Coba lagi.'); }
+      function startWebSynth() {
+        try {
+          if (!synthCtx) synthCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (synthCtx.state === 'suspended') synthCtx.resume();
+          clearInterval(synthTimer);
+          const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23];
+          let step = 0;
+          synthTimer = setInterval(() => {
+            if (!isPlaying) return;
+            try {
+              let osc = synthCtx.createOscillator();
+              let gain = synthCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.value = notes[step % notes.length];
+              gain.gain.value = 0.02;
+              osc.connect(gain);
+              gain.connect(synthCtx.destination);
+              osc.start();
+              gain.gain.exponentialRampToValueAtTime(0.0001, synthCtx.currentTime + 1.2);
+              osc.stop(synthCtx.currentTime + 1.2);
+              step++;
+            } catch(e) {}
+          }, 1400);
+        } catch(e) {}
+      }
+
+      function stopWebSynth() {
+        clearInterval(synthTimer);
+      }
+
+      function toggleMusicState(state) {
+        isPlaying = typeof state === 'boolean' ? state : !isPlaying;
+        musicButton.classList.toggle('playing', isPlaying);
+        musicButton.querySelector('b').textContent = isPlaying ? 'ON' : 'OFF';
+        if (audioToggleBtn) audioToggleBtn.textContent = isPlaying ? '❚❚ PAUSE' : '▶ PLAY';
+        if (audioDisk) audioDisk.classList.toggle('spinning', isPlaying);
+
+        if (isPlaying) {
+          audioStatusText.textContent = 'Musik chill sedang berputar ♪';
+          let playPromise = bgAudio.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              stopWebSynth();
+            }).catch(() => {
+              // Audio element restricted by browser autoplay policy -> fallback to Web Audio Synth
+              startWebSynth();
+            });
           }
-        });
-      };
+        } else {
+          audioStatusText.textContent = 'Musik dihentikan sementara';
+          bgAudio.pause();
+          stopWebSynth();
+        }
+      }
 
-      musicButton.onclick = () => {
-        const isOpen = musicPlayer.classList.toggle('open');
-        musicPlayer.setAttribute('aria-hidden', String(!isOpen));
-        musicButton.setAttribute('aria-expanded', String(isOpen));
-        musicButton.innerHTML = `MUSIC <b>${isOpen ? 'ON' : 'OFF'}</b>`;
-        if (!ytAPIReady) return;
-        if (isOpen) { ytPlayer.playVideo(); }
-        else { ytPlayer.pauseVideo(); }
-      };
-      document.querySelector('#musicClose').onclick = () => musicButton.click();
+      if (musicButton && musicPlayer) {
+        musicButton.onclick = (e) => {
+          if (e.target.closest('#soundButton')) {
+            const open = musicPlayer.classList.toggle('open');
+            musicPlayer.setAttribute('aria-hidden', String(!open));
+            musicButton.setAttribute('aria-expanded', String(open));
+          }
+          toggleMusicState();
+        };
+
+        if (audioToggleBtn) {
+          audioToggleBtn.onclick = () => toggleMusicState();
+        }
+
+        const closeBtn = document.querySelector('#musicClose');
+        if (closeBtn) {
+          closeBtn.onclick = () => {
+            musicPlayer.classList.remove('open');
+            musicPlayer.setAttribute('aria-hidden', 'true');
+            musicButton.setAttribute('aria-expanded', 'false');
+          };
+        }
+      }
 
       // ── Quick capture (mobile) ──
       const quickCapture = document.querySelector('#quickCaptureButton');
       const normalCapture = document.querySelector('#captureButton');
-      new MutationObserver(() => {
-        quickCapture.disabled = normalCapture.disabled;
-      }).observe(normalCapture, { attributes: true, attributeFilter: ['disabled'] });
-      quickCapture.onclick = () => normalCapture.click();
+      if (quickCapture && normalCapture) {
+        new MutationObserver(() => {
+          quickCapture.disabled = normalCapture.disabled;
+        }).observe(normalCapture, { attributes: true, attributeFilter: ['disabled'] });
+        quickCapture.onclick = () => normalCapture.click();
+      }
 
       // ── Sticker editor ──
       const stickerEditor = document.querySelector('#stickerEditor');
-      stickerEditor.oninput = () => {
-        const emoji = stickerEditor.value.trim() || '✦';
-        let custom = document.querySelector('#customSticker');
-        if (!custom) {
-          custom = document.createElement('button');
-          custom.id = 'customSticker';
-          custom.type = 'button';
-          custom.hidden = true;
-          document.querySelector('#stickers').append(custom);
-        }
-        custom.dataset.sticker = emoji;
-        custom.click();
-      };
+      if (stickerEditor) {
+        stickerEditor.oninput = () => {
+          const emoji = stickerEditor.value.trim() || '✦';
+          let custom = document.querySelector('#customSticker');
+          if (!custom) {
+            custom = document.createElement('button');
+            custom.id = 'customSticker';
+            custom.type = 'button';
+            custom.hidden = true;
+            document.querySelector('#stickers').append(custom);
+          }
+          custom.dataset.sticker = emoji;
+          custom.click();
+        };
+      }
     </script>
   </body>
 </html>
