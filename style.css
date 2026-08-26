@@ -275,62 +275,98 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}
 /* ── Footer ── */
 footer{border-top:1px solid var(--ink);padding:40px 5.4vw;display:flex;justify-content:space-between;font:10px var(--mono);letter-spacing:1.1px}
 
-/* ── Mobile Responsive ── */
-@media(max-width:768px){
-  .site-header{height:68px;padding:0 18px}
-  .header-note{display:none}
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-copy{padding:48px 18px 40px}
-  .hero h1{font-size:clamp(2.6rem,8vw,3.8rem)}
-  .hero-art{height:240px;border-left:0;border-top:1px solid var(--ink)}
-  .sun{width:160px;height:160px;right:8%;top:10%}
-  .arch-back{width:180px;height:220px;left:18%}
-  .arch-front{width:140px;height:180px;left:30%}
-  .booth,.gallery-section{padding:40px 18px}
-  .section-heading{grid-template-columns:1fr;gap:8px;margin-bottom:24px}
-  .section-heading .eyebrow{margin:0}
-  .section-heading>p{margin:0;font-size:14px}
-  .booth-grid{grid-template-columns:1fr;gap:18px}
-  .camera-stage{aspect-ratio:var(--stage-ratio,4/3);max-height:55vh}
-  .controls{gap:6px}
-  .control-block{padding:12px 0}
-  .filter,.format,.layout{min-height:44px}
-  .filters{gap:5px;max-height:160px;overflow-y:auto;padding-bottom:4px}
-  .filter{font-size:10px;padding:8px 10px}
-  .swatch{width:16px;height:16px}
-  .cover{height:54px}
-  .covers{grid-template-columns:repeat(4,1fr);max-height:220px}
-  .primary-action{margin-top:8px;min-height:48px;font-size:11px}
-  .capture-action{font-size:13px;min-height:52px;position:sticky;bottom:12px;z-index:15;box-shadow:0 4px 16px rgba(0,0,0,.2);border-radius:6px}
-  .gallery-heading{display:block}
-  .gallery-heading>p{margin-top:10px}
-  .gallery{grid-template-columns:repeat(2,1fr);gap:12px}
-  .empty-card{grid-column:span 2;padding:40px 16px}
-  .sound-button{font-size:9px;padding:8px 10px}
-  footer{padding:24px 18px;min-height:90px;gap:10px;align-items:flex-start;flex-direction:column;font-size:9px}
-  .live-toolbar{bottom:10px;gap:8px;width:calc(100% - 24px);justify-content:center}
-  .toolbar-btn{padding:10px 16px;font-size:11px;flex:1;text-align:center}
-  .quick-capture{display:flex;width:100%;border:0;background:var(--yellow);color:var(--ink);min-height:54px;align-items:center;justify-content:center;gap:8px;font:700 13px var(--mono);letter-spacing:.6px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.15);touch-action:manipulation}
-  .quick-capture:active{transform:scale(.98)}
-  .quick-capture:disabled{opacity:.4}
-  .quick-capture b{font-size:20px}
-  .controls>.capture-action{display:none}
-  .download{min-width:38px;min-height:38px;font-size:18px}
-  .photo-card span{font-size:9px}
-  .review-panel,.qr-panel{padding:20px;max-height:90vh}
-  .review-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .review-actions{flex-direction:column}
-  .review-actions button{width:100%;padding:14px}
-  .music-player{top:auto;bottom:20px;right:14px;left:auto;width:min(220px,calc(100vw - 28px));padding:10px 12px;box-shadow:4px 4px 0 var(--ink);border-radius:8px;font-size:10px}
-  .music-title{font-size:14px;margin:2px 0 6px}
-  .yt-wrap{padding-bottom:40%}
-  .yt-note{font-size:8px;margin-top:4px}
+/* ── Mobile & Responsive Design Systems ── */
+@media(max-width:900px){
+  .booth-grid{grid-template-columns:1fr;gap:20px}
+  .camera-stage{aspect-ratio:var(--stage-ratio,4/3);max-height:56vh;width:100%}
+  .music-player{right:14px;top:74px}
 }
 
-@media(max-width:420px){
-  .booth,.gallery-section{padding:30px 14px}
-  .site-header{padding:0 14px}
-  .covers{grid-template-columns:repeat(3,1fr)}
+@media(max-width:768px){
+  .site-header{height:64px;padding:0 16px;justify-content:space-between}
+  .header-note{display:none}
+  .brand{gap:10px}
+  .brand-mark{width:34px;height:34px;font-size:28px;line-height:34px}
+  .sound-button{font-size:9px;padding:6px 12px}
+  .eq-bars{height:10px;width:10px}
+
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-copy{padding:36px 16px 32px}
+  .hero h1{font-size:clamp(2.2rem,8vw,3.4rem);letter-spacing:-.05em}
+  .hero-art{height:200px;border-left:0;border-top:1px solid var(--ink)}
+  .sun{width:140px;height:140px;right:6%;top:8%}
+  .arch-back{width:160px;height:190px;left:15%}
+  .arch-front{width:120px;height:150px;left:28%}
+
+  .booth,.gallery-section{padding:32px 16px}
+  .section-heading{grid-template-columns:1fr;gap:6px;margin-bottom:20px}
+  .section-heading>p{margin:0;font-size:13px}
+
+  .camera-stage{aspect-ratio:var(--stage-ratio,4/3);max-height:50vh;border-radius:8px}
+  .stage-top,.stage-bottom{padding:8px 12px;font-size:9px}
+  .camera-caption-overlay{font-size:11px;padding:5px 12px;max-width:92%;white-space:normal;word-break:break-word;text-align:center;box-sizing:border-box}
+  .camera-caption-overlay.pos-top{top:38px}
+  .camera-caption-overlay.pos-bottom{bottom:36px}
+  .live-toolbar{bottom:10px;gap:6px;width:calc(100% - 20px);justify-content:center}
+  .toolbar-btn{padding:8px 12px;font-size:10px;flex:1;text-align:center;border-radius:4px}
+
+  .quick-capture{display:flex;width:100%;border:0;background:var(--yellow);color:var(--ink);min-height:52px;align-items:center;justify-content:center;gap:8px;font:700 13px var(--mono);letter-spacing:.6px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.15);touch-action:manipulation;margin-top:10px}
+  .quick-capture:active{transform:scale(.98)}
+  .quick-capture:disabled{opacity:.4}
+  .quick-capture b{font-size:18px}
+  .controls>.capture-action{display:none}
+
+  .controls{gap:4px}
+  .control-block{padding:10px 0}
+  .control-label{font-size:9px;margin-bottom:8px}
+  
+  .filters{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .filter{flex-shrink:0;padding:6px 10px;font-size:9px;white-space:nowrap}
+  .swatch{width:14px;height:14px}
+
+  .shot-count,.timer-options,.caption-positions{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .shot,.timer,.pos-btn{flex:1;min-width:60px;padding:8px 4px;font-size:9px;text-align:center;white-space:nowrap}
+
+  .emoji-picker{display:flex;flex-wrap:wrap;gap:4px;max-height:100px}
+  .emoji-opt{padding:5px 8px;font-size:13px}
+
+  .cover-tabs{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
   .cover-tab{padding:5px 10px;font-size:8px}
-  .review-grid{grid-template-columns:repeat(2,1fr)}
+  .covers{grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:5px;max-height:200px}
+  .cover{height:48px}
+
+  .layouts{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px}
+  .layout{padding:8px;font-size:9px}
+
+  .gallery{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .empty-card{padding:30px 16px}
+
+  .review-panel,.qr-panel{padding:18px 14px;max-height:92vh;width:min(760px,calc(100vw - 20px));margin:auto}
+  .review-panel h2,.qr-panel h2{font-size:1.6rem}
+  .review-copy{font-size:11px;margin:4px 0 12px}
+  .review-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .review-actions{flex-direction:column;gap:8px}
+  .review-actions button{width:100%;padding:12px;font-size:11px}
+
+  .music-player{position:fixed;z-index:100;right:12px;bottom:14px;top:auto;left:12px;width:calc(100vw - 24px);max-width:320px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.3);border-radius:12px;background:rgba(245,240,231,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:0 auto}
+  .music-title{font-size:16px;margin:2px 0 8px}
+  .audio-card{padding:8px 10px;gap:8px}
+  .audio-disk{width:32px;height:32px;font-size:14px}
+  .audio-info strong{font-size:11px}
+  .audio-info small{font-size:8px}
+  .audio-toggle-btn{padding:6px 10px;font-size:9px}
+
+  footer{padding:20px 16px;flex-direction:column;gap:8px;font-size:9px}
+}
+
+@media(max-width:380px){
+  .site-header{padding:0 12px}
+  .booth,.gallery-section{padding:24px 12px}
+  .hero-copy{padding:28px 12px 24px}
+  .camera-stage{aspect-ratio:1/1;max-height:45vh}
+  .shot,.timer,.pos-btn{min-width:48px;padding:6px 2px;font-size:8px}
+  .covers{grid-template-columns:repeat(3,1fr)}
+  .gallery{grid-template-columns:1fr}
+  .review-grid{grid-template-columns:1fr}
 }
